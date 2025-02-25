@@ -1,0 +1,45 @@
+.dashboard {
+    padding: 20px;
+    color: #fff; /* Białe napisy dla całego dashboardu, jeśli chcesz */
+    width: 100%; /* Zajmij całą szerokość przeglądarki */
+    min-height: 100vh; /* Zajmij minimalnie całą wysokość okna przeglądarki */
+    box-sizing: border-box; /* Zapewnij, że padding nie zwiększa szerokości */
+}
+
+.apartments-list {
+    display: grid;
+    gap: 10px; /* Mniejsza przerwa między przyciskami */
+    margin-top: 20px;
+    width: 100%; /* Zajmij całą szerokość rodzica */
+}
+
+.apartment-button {
+    padding: 10px 15px; /* Mniejsze wypełnienie, aby przyciski były bardziej kompaktowe */
+    background-color: #000; /* Czarne tło przycisków */
+    color: #fff; /* Białe napisy w przyciskach */
+    border: 2px solid #fff; /* Biała obwódka */
+    border-radius: 4px; /* Opcjonalne zaokrąglenie rogów */
+    cursor: pointer;
+    width: 100%; /* Pełna szerokość przycisku */
+    max-width: 100%; /* Zapobiega zbyt dużemu rozciąganiu */
+    text-align: left; /* Wyrównanie tekstu do lewej */
+    display: flex; /* Użyj flex, aby dane były w jednym wierszu */
+    flex-direction: row; /* Ustaw dane w jednym wierszu */
+    align-items: center; /* Wyrównaj elementy pionowo w środku */
+    justify-content: flex-start; /* Wyrównaj elementy do lewej */
+    font-size: 14px; /* Mniejszy rozmiar czcionki, jeśli potrzebne */
+    overflow: hidden; /* Zapobiega przepełnieniu tekstu */
+    white-space: nowrap; /* Zapobiega przechodzeniu do nowej linii */
+    text-overflow: ellipsis; /* Skraca tekst z wielokropkiem, jeśli jest zbyt długi */
+}
+
+.apartment-button p {
+    margin: 0 10px 0 0; /* Usuń marginesy pionowe i dodaj margines poziomy między elementami */
+    font-size: 14px; /* Mniejszy rozmiar czcionki dla tekstu */
+    color: #fff; /* Białe napisy w paragrafach */
+}
+
+.apartment-button:hover {
+    background-color: #333; /* Ciemniejsze tło przy najechaniu kursorem (opcjonalne) */
+    border-color: #fff; /* Białą obwódkę zachowaj przy hover */
+}
