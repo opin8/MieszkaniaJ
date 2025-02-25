@@ -1,3 +1,4 @@
+// src/LoginForm.tsx
 import { useState } from "react";
 import { login } from "./api";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +12,8 @@ function LoginForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            // Tutaj `login` zwraca token JWT, który zapisujemy w localStorage
             await login({ username, password });
+            console.log("Zalogowano, token zapisany w localStorage");
             navigate("/dashboard");
         } catch (err) {
             setError("Niepoprawne dane logowania");

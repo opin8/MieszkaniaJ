@@ -1,3 +1,4 @@
+// bart.mieszkaniaj.service.UserService.java
 package bart.mieszkaniaj.service;
 
 import bart.mieszkaniaj.model.User;
@@ -30,8 +31,17 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public boolean checkPassword(String username, String rawPassword) {
-        User user = findByUsername(username);
-        return user != null && user.checkPassword(rawPassword, passwordEncoder); // Teraz przekazujemy encoder
+    // Metoda do inicjalizacji statycznych użytkowników (przy starcie aplikacji)
+    public void initializeUsers() {
+        if (userRepository.count() == 0) { // Tylko jeśli baza jest pusta
+            String[] usernames = {"user1", "user2", "user3", "user4", "user5"};
+            String password = "haslo123"; // To samo hasło dla wszystkich, hashowane
+            for (String username : usernames) {
+                User user = new User();
+                user.setUsername(username);
+                user.setPassword(passwordEncoder.encode(password)); // Hashuj hasło
+                userRepository.save(user);
+            }
+        }
     }
 }

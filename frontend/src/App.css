@@ -1,8 +1,11 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%; /* Zajmij całą szerokość przeglądarki */
+  display:flex;
+  min-height: 100vh; /* Zajmij minimalnie całą wysokość okna */
+  margin: 0; /* Usuń marginesy */
+  padding: 0; /* Usuń padding, jeśli nie jest potrzebny */
+  box-sizing: border-box; /* Zapewnij, że padding i border nie zwiększają szerokości */
+  text-align: center; /* Zachowaj wycentrowanie, jeśli potrzebne */
 }
 
 .logo {

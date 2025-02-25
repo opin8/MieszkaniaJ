@@ -13,6 +13,11 @@ public class ApartmentService {
 
     private ApartmentRepository apartmentRepository;
 
+    @Autowired
+    public ApartmentService(ApartmentRepository apartmentRepository) {
+        this.apartmentRepository = apartmentRepository;
+    }
+
     public List<Apartment> getAllApartments() {
         return apartmentRepository.findAll();
     }

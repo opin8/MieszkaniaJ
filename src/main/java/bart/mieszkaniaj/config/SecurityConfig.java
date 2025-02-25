@@ -1,3 +1,4 @@
+// bart.mieszkaniaj.config.SecurityConfig.java
 package bart.mieszkaniaj.config;
 
 import bart.mieszkaniaj.service.CustomUserDetailsService;
@@ -12,8 +13,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 public class SecurityConfig {
@@ -39,30 +43,31 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Spring Security 6 wymaga takiego zapisu
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // API nie trzyma sesji
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/users/auth/login").permitAll()
-                        .requestMatchers("/api/apartments/**").authenticated() // Każdy zalogowany użytkownik może operować na mieszkaniach
+                        .requestMatchers("/api/apartments/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults()); // Nowy sposób na httpBasic()
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults()); // Włącz CORS z domyślnymi ustawieniami, ale dostosuj poniżej
 
         return http.build();
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:5173") // Twój frontend
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowCredentials(true);
-            }
-        };
-    }
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Zezwól na frontend (Vite)
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Zezwól na metody HTTP
+        configuration.setAllowedHeaders(Arrays.asList("*")); // Zezwól na wszystkie nagłówki (w tym Authorization)
+        configuration.setAllowCredentials(true); // Zezwól na credentials (np. cookies, Authorization)
+        configuration.setMaxAge(3600L); // Czas ważności preflight requestów (w sekundach)
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Zastosuj do wszystkich endpointów
+        return source;
+    }
 }

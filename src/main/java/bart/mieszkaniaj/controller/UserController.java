@@ -1,8 +1,8 @@
+// bart.mieszkaniaj.controller.UserController.java
 package bart.mieszkaniaj.controller;
 
 import bart.mieszkaniaj.DTO.LoginRequest;
 import bart.mieszkaniaj.DTO.LoginResponse;
-import bart.mieszkaniaj.DTO.RegistrationRequest;
 import bart.mieszkaniaj.config.JwtUtil;
 import bart.mieszkaniaj.model.User;
 import bart.mieszkaniaj.service.UserService;
@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,10 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder; // Dodaj, jeśli jeszcze nie ma
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class); // Poprawione na .class
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -40,14 +44,13 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    // Changed to avoid conflict with ID-based endpoints
     @PostMapping("/auth/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
         logger.info("Attempting login for user: {}", loginRequest.getUsername());
-        boolean isAuthenticated = userService.checkPassword(loginRequest.getUsername(), loginRequest.getPassword());
+        User user = userService.findByUsername(loginRequest.getUsername());
 
-        if (isAuthenticated) {
-            String token = jwtUtil.generateToken(loginRequest.getUsername());
+        if (user != null && user.checkPassword(loginRequest.getPassword(), passwordEncoder)) {
+            String token = jwtUtil.generateToken(user.getUsername());
             logger.info("User {} logged in successfully. Token generated.", loginRequest.getUsername());
             return ResponseEntity.ok(new LoginResponse(true, "Login successful", token));
         } else {
@@ -55,5 +58,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse(false, "Invalid credentials", null));
         }
     }
-
 }
