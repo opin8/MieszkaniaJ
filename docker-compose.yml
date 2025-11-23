@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mieszkania-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: mieszkania_db
+      POSTGRES_USER: mieszkania_user
+      POSTGRES_PASSWORD: mieszkania123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mieszkania_user"]
+      interval: 5s
+      retries: 5
+      start_period: 5s
+
+  backend:
+    build: .
+    container_name: mieszkania-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mieszkania_db
+      SPRING_DATASOURCE_USERNAME: mieszkania_user
+      SPRING_DATASOURCE_PASSWORD: mieszkania123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:

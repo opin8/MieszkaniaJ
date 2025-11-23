@@ -41,24 +41,33 @@ instance.interceptors.response.use(
 );
 
 export const login = async (credentials: { username: string; password: string }) => {
-    const response = await fetch("/api/users/auth/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-    });
+    console.log("Próba logowania:", credentials); // ← widać co wysyłasz
 
-    if (!response.ok) {
-        throw new Error("Błąd logowania");
-    }
+    try {
+        const response = await instance.post("/users/auth/login", credentials);
+        
+        console.log("Odpowiedź z backendu:", response.data); // ← widać dokładnie co przysło
 
-    const data: LoginResponse = await response.json();
-    if (data.success && data.token) {
-        localStorage.setItem("token", data.token);
-        return data;
-    } else {
-        throw new Error(data.message || "Niepowodzenie logowania");
+        const data = response.data as LoginResponse;
+
+        if (data.success && data.token) {
+            localStorage.setItem("token", data.token);
+            console.log("Zalogowano! Token zapisany.");
+            return data;
+        } else {
+            console.error("Logowanie nieudane – brak tokena lub success=false");
+            throw new Error(data.message || "Niepowodzenie logowania");
+        }
+    } catch (error: any) {
+        // Tu zawsze zobaczysz dokładny błąd
+        if (error.response) {
+            console.error("Błąd z serwera:", error.response.status, error.response.data);
+        } else if (error.request) {
+            console.error("Brak odpowiedzi od serwera – czy backend działa na 8080?");
+        } else {
+            console.error("Inny błąd:", error.message);
+        }
+        throw error;
     }
 };
 
