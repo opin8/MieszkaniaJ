@@ -1,0 +1,90 @@
+.add-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.back-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  align-self: flex-start;
+}
+
+.back-btn:hover {
+  background: white;
+  color: #667eea;
+}
+
+.add-card {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 600px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.add-card h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+.add-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.add-card input,
+.add-card label {
+  padding: 1rem;
+  border-radius: 12px;
+  border: none;
+  font-size: 1.1rem;
+}
+
+.add-card input {
+  background: rgba(255,255,255,0.2);
+  color: white;
+}
+
+.add-card input::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+.add-card label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255,255,255,0.15);
+  cursor: pointer;
+}
+
+.submit-btn {
+  background: #00d4ff;
+  color: white;
+  padding: 1.2rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: 0.3s;
+}
+
+.submit-btn:hover {
+  background: #00b0d4;
+}

@@ -1,45 +1,96 @@
 .dashboard {
-    padding: 20px;
-    color: #fff; /* Białe napisy dla całego dashboardu, jeśli chcesz */
-    width: 100%; /* Zajmij całą szerokość przeglądarki */
-    min-height: 100vh; /* Zajmij minimalnie całą wysokość okna przeglądarki */
-    box-sizing: border-box; /* Zapewnij, że padding nie zwiększa szerokości */
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2rem;
 }
 
-.apartments-list {
-    display: grid;
-    gap: 10px; /* Mniejsza przerwa między przyciskami */
-    margin-top: 20px;
-    width: 100%; /* Zajmij całą szerokość rodzica */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
 }
 
-.apartment-button {
-    padding: 10px 15px; /* Mniejsze wypełnienie, aby przyciski były bardziej kompaktowe */
-    background-color: #000; /* Czarne tło przycisków */
-    color: #fff; /* Białe napisy w przyciskach */
-    border: 2px solid #fff; /* Biała obwódka */
-    border-radius: 4px; /* Opcjonalne zaokrąglenie rogów */
-    cursor: pointer;
-    width: 100%; /* Pełna szerokość przycisku */
-    max-width: 100%; /* Zapobiega zbyt dużemu rozciąganiu */
-    text-align: left; /* Wyrównanie tekstu do lewej */
-    display: flex; /* Użyj flex, aby dane były w jednym wierszu */
-    flex-direction: row; /* Ustaw dane w jednym wierszu */
-    align-items: center; /* Wyrównaj elementy pionowo w środku */
-    justify-content: flex-start; /* Wyrównaj elementy do lewej */
-    font-size: 14px; /* Mniejszy rozmiar czcionki, jeśli potrzebne */
-    overflow: hidden; /* Zapobiega przepełnieniu tekstu */
-    white-space: nowrap; /* Zapobiega przechodzeniu do nowej linii */
-    text-overflow: ellipsis; /* Skraca tekst z wielokropkiem, jeśli jest zbyt długi */
+.logout-btn {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.apartment-button p {
-    margin: 0 10px 0 0; /* Usuń marginesy pionowe i dodaj margines poziomy między elementami */
-    font-size: 14px; /* Mniejszy rozmiar czcionki dla tekstu */
-    color: #fff; /* Białe napisy w paragrafach */
+.logout-btn:hover {
+  background: white;
+  color: #667eea;
 }
 
-.apartment-button:hover {
-    background-color: #333; /* Ciemniejsze tło przy najechaniu kursorem (opcjonalne) */
-    border-color: #fff; /* Białą obwódkę zachowaj przy hover */
+.apartments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
+
+.apartment-card {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.apartment-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.card-city {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.card-address {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+
+.card-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.card-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.5rem;
+  padding: 4rem;
+}
+
+.add-btn {
+  background: #00d4ff;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+.add-btn:hover { background: #00b0d4; }

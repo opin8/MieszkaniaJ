@@ -8,7 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MieszkaniaJApplication implements CommandLineRunner {
+public class MieszkaniaJApplication implements CommandLineRunner {  // ← już masz
 
     @Autowired
     private UserService userService;
@@ -19,6 +19,6 @@ public class MieszkaniaJApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        userService.initializeUsers(); // Inicjalizuj statycznych użytkowników
+        userService.createAdminIfNotExists();   // ← to się wykona na 100% zawsze
     }
 }

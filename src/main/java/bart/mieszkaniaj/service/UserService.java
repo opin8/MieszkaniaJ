@@ -33,16 +33,27 @@ public class UserService {
     }
 
     @PostConstruct
-    public void initializeUsers() {
+    public void createAdminIfNotExists() {
         if (userRepository.count() == 0) {
-            String[] usernames = {"user1", "user2", "user3", "user4", "user5"};
-            String password = "haslo123";
-            for (String username : usernames) {
-                User user = new User();
-                user.setUsername(username);
-                user.setPassword(passwordEncoder.encode(password));
-                userRepository.save(user);
-            }
+            System.out.println("Baza pusta – tworzę domyślnych użytkowników...");
+
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            userRepository.save(admin);
+
+            User user1 = new User();
+            user1.setUsername("user1");
+            user1.setPassword(passwordEncoder.encode("haslo123"));
+            userRepository.save(user1);
+
+            System.out.println("=============================================");
+            System.out.println("UTWORZONO KONTA:");
+            System.out.println("admin   → hasło: admin123");
+            System.out.println("user1   → hasło: haslo123");
+            System.out.println("=============================================");
+        } else {
+            System.out.println("Baza nie jest pusta – pomijam tworzenie użytkowników.");
         }
     }
 }

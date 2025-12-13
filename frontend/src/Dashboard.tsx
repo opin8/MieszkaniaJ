@@ -1,108 +1,82 @@
-// src/Dashboard.tsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { isAuthenticated, logout } from "./api";
-import axios from "./api"; // Użyj skonfigurowanego axios
-import './Dashboard.css';
+import api from "./api";  // TYLKO TEN JEDEN
+import "./Dashboard.css";
 
-// Zdefiniuj typ Apartment na podstawie modelu Java
+// Dodaj tę funkcję – bo jej nie było w nowym api.ts
+const logout = () => {
+  localStorage.removeItem("token");
+};
+
 interface Apartment {
-    id: number;
-    city: string;
-    postalCode: string;
-    street: string;
-    houseNumber: number;
-    apartmentNumber: number;
-    area: number;
-    numberOfRooms: number;
-    storageUnit: boolean;
-    parkingSpotNumber: number | null; // Może być null lub undefined, jeśli API różni się
+  id: number;
+  city: string;
+  postalCode: string;
+  street: string;
+  houseNumber: number;
+  apartmentNumber: number;
+  area: number;
+  numberOfRooms: number;
+  storageUnit: boolean;
+  parkingSpotNumber: number | null;
 }
 
 function Dashboard() {
-    const navigate = useNavigate();
-    const [apartments, setApartments] = useState<Apartment[]>([]);
-    const [loading, setLoading] = useState(true); // Dodaj stan ładowania
-    const [error, setError] = useState<string | null>(null); // Dodaj stan błędu
+  const navigate = useNavigate();
+  const [apartments, setApartments] = useState<Apartment[]>([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (!isAuthenticated()) {
-            navigate("/");
-            return;
-        }
+  useEffect(() => {
+    api.get<Apartment[]>("/apartments")
+      .then(res => {
+        setApartments(res.data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
 
-        const fetchApartments = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const response = await axios.get<Apartment[]>("/apartments");
-                console.log("Odpowiedź z API (surowe dane):", response.data);
-                if (Array.isArray(response.data)) {
-                    setApartments(response.data);
-                } else {
-                    console.warn("Otrzymano nieoczekiwany format danych:", response.data);
-                    setApartments([]);
-                }
-            } catch (error: any) { // Użyj 'any' lub 'AxiosError' po imporcie
-                console.error("Error fetching apartments:", error);
-                if (error.response) {
-                    console.error("Status:", error.response.status);
-                    console.error("Data:", error.response.data);
-                    setError(`Błąd pobierania danych: Status ${error.response.status}`);
-                } else {
-                    setError("Błąd połączenia z serwerem");
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
+  const handleLogout = () => {
+    logout();           // teraz działa!
+    navigate("/");
+  };
 
-        fetchApartments();
-    }, [navigate]);
+  if (loading) return <div className="loading">Ładowanie mieszkań...</div>;
 
-    const handleApartmentClick = (id: number) => {
-        navigate(`/apartment/${id}`);
-    };
+  return (
+    <div className="dashboard">
+      <header className="dashboard-header">
+        <h1>MieszkaniaJ – Twoje mieszkania</h1>
+        <button onClick={() => navigate("/add")} className="add-btn">
+         + Dodaj mieszkanie
+        </button>
+        <button onClick={handleLogout} className="logout-btn">Wyloguj się</button>
+      </header>
 
-    const handleLogout = () => {
-        logout();
-        navigate("/");
-    };
-
-    return (
-        <div className="dashboard">
-            <h1>Witaj w aplikacji MieszkaniaJ!</h1>
-            <button onClick={handleLogout}>Wyloguj</button>
-
-            <div className="apartments-list">
-                {loading ? (
-                    <p>Ładowanie mieszkań...</p>
-                ) : error ? (
-                    <p style={{ color: "red" }}>{error}</p>
-                ) : apartments.length > 0 ? (
-                    apartments.map((apartment) => (
-                        <button
-                            key={apartment.id}
-                            className="apartment-button"
-                            onClick={() => handleApartmentClick(apartment.id)}
-                        >
-                            <p>Miasto: {apartment.city}</p>
-                            <p>Kod pocztowy: {apartment.postalCode}</p>
-                            <p>Ulica: {apartment.street} {apartment.houseNumber}/{apartment.apartmentNumber}</p>
-                            <p>Powierzchnia: {apartment.area} m²</p>
-                            <p>Pokoje: {apartment.numberOfRooms}</p>
-                            <p>Przechowalnia: {apartment.storageUnit ? "Tak" : "Nie"}</p>
-                            {apartment.parkingSpotNumber !== null && apartment.parkingSpotNumber !== undefined && (
-                                <p>Miejsce parkingowe: {apartment.parkingSpotNumber}</p>
-                            )}
-                        </button>
-                    ))
-                ) : (
-                    <p>Brak dostępnych mieszkań.</p>
-                )}
+      <div className="apartments-grid">
+        {apartments.map((apt) => (
+          <div
+            key={apt.id}
+            className="apartment-card"
+            onClick={() => navigate(`/apartment/${apt.id}`)}
+          >
+            <div className="card-city">{apt.city}</div>
+            <div className="card-address">
+              {apt.street} {apt.houseNumber}/{apt.apartmentNumber}
             </div>
-        </div>
-    );
+            <div className="card-details">
+              <span>{apt.area} m²</span>
+              <span>•</span>
+              <span>{apt.numberOfRooms} pokoje</span>
+            </div>
+            <div className="card-features">
+              {apt.storageUnit && <span>Przechowalnia</span>}
+              {apt.parkingSpotNumber && <span>Miejsce parkingowe #{apt.parkingSpotNumber}</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default Dashboard;
