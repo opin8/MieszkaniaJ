@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "./api";  // TYLKO TEN JEDEN
+import api from "./api";
 import "./Dashboard.css";
 
-// Dodaj tę funkcję – bo jej nie było w nowym api.ts
 const logout = () => {
   localStorage.removeItem("token");
 };
@@ -18,7 +17,9 @@ interface Apartment {
   area: number;
   numberOfRooms: number;
   storageUnit: boolean;
-  parkingSpotNumber: number | null;
+  parkingSpotNumber?: number | null;
+  balconyTerraceArea?: number | null;
+  garageNumber?: string | null;
 }
 
 function Dashboard() {
@@ -27,7 +28,8 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get<Apartment[]>("/apartments")
+    api
+      .get<Apartment[]>("/apartments")
       .then(res => {
         setApartments(res.data);
         setLoading(false);
@@ -36,7 +38,7 @@ function Dashboard() {
   }, []);
 
   const handleLogout = () => {
-    logout();           // teraz działa!
+    logout();
     navigate("/");
   };
 
@@ -47,30 +49,34 @@ function Dashboard() {
       <header className="dashboard-header">
         <h1>MieszkaniaJ – Twoje mieszkania</h1>
         <button onClick={() => navigate("/add")} className="add-btn">
-         + Dodaj mieszkanie
+          + Dodaj mieszkanie
         </button>
-        <button onClick={handleLogout} className="logout-btn">Wyloguj się</button>
+        <button onClick={handleLogout} className="logout-btn">
+          Wyloguj się
+        </button>
       </header>
 
-      <div className="apartments-grid">
+      <div className="apartments-list">
         {apartments.map((apt) => (
           <div
             key={apt.id}
-            className="apartment-card"
+            className="apartment-item"  // Nowa klasa dla listy
             onClick={() => navigate(`/apartment/${apt.id}`)}
           >
-            <div className="card-city">{apt.city}</div>
-            <div className="card-address">
+            <div className="item-city">{apt.city}</div>
+            <div className="item-address">
               {apt.street} {apt.houseNumber}/{apt.apartmentNumber}
             </div>
-            <div className="card-details">
+            <div className="item-details">
               <span>{apt.area} m²</span>
               <span>•</span>
               <span>{apt.numberOfRooms} pokoje</span>
             </div>
-            <div className="card-features">
+            <div className="item-features">
               {apt.storageUnit && <span>Przechowalnia</span>}
               {apt.parkingSpotNumber && <span>Miejsce parkingowe #{apt.parkingSpotNumber}</span>}
+              {apt.balconyTerraceArea && <span>Balkon/taras: {apt.balconyTerraceArea} m²</span>}
+              {apt.garageNumber && <span>Garaż: {apt.garageNumber}</span>}
             </div>
           </div>
         ))}

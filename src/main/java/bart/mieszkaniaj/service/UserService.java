@@ -32,7 +32,6 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    @PostConstruct
     public void createAdminIfNotExists() {
         if (userRepository.count() == 0) {
             System.out.println("Baza pusta – tworzę domyślnych użytkowników...");

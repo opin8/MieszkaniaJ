@@ -1,13 +1,21 @@
 package bart.mieszkaniaj.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import bart.mieszkaniaj.model.Apartment;
 import bart.mieszkaniaj.service.ApartmentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/apartments")
@@ -27,8 +35,8 @@ public class ApartmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Apartment> getApartmentById(@PathVariable int id) {
-        Optional<Apartment> apartment = apartmentService.getApartmentById(id);
-        return apartment.map(ResponseEntity::ok)
+        return apartmentService.getApartmentById(id)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -39,29 +47,30 @@ public class ApartmentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Apartment> updateApartment(@PathVariable int id, @RequestBody Apartment apartmentDetails) {
-        Optional<Apartment> existing = apartmentService.getApartmentById(id);
-        if (existing.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        return apartmentService.getApartmentById(id)
+                .map(existing -> {
+                    // Podstawowe pola
+                    existing.setCity(apartmentDetails.getCity());
+                    existing.setPostalCode(apartmentDetails.getPostalCode());
+                    existing.setStreet(apartmentDetails.getStreet());
+                    existing.setHouseNumber(apartmentDetails.getHouseNumber());
+                    existing.setApartmentNumber(apartmentDetails.getApartmentNumber());
+                    existing.setArea(apartmentDetails.getArea());
+                    existing.setNumberOfRooms(apartmentDetails.getNumberOfRooms());
+                    existing.setStorageUnit(apartmentDetails.isStorageUnit());
+                    existing.setParkingSpotNumber(apartmentDetails.getParkingSpotNumber());
+                    existing.setBalconyTerraceArea(apartmentDetails.getBalconyTerraceArea());
+                    existing.setGarageNumber(apartmentDetails.getGarageNumber());
 
-        Apartment apartment = existing.get();
+                    // <<< KLUCZOWE – AKTUALIZACJA LIST >>>
+                    existing.setRentPayments(apartmentDetails.getRentPayments() != null ? apartmentDetails.getRentPayments() : new ArrayList<>());
+                    existing.setMeterReadings(apartmentDetails.getMeterReadings() != null ? apartmentDetails.getMeterReadings() : new ArrayList<>());
+                    existing.setExpenses(apartmentDetails.getExpenses() != null ? apartmentDetails.getExpenses() : new ArrayList<>());
 
-        apartment.setCity(apartmentDetails.getCity());
-        apartment.setPostalCode(apartmentDetails.getPostalCode());
-        apartment.setStreet(apartmentDetails.getStreet());
-        apartment.setHouseNumber(apartmentDetails.getHouseNumber());
-        apartment.setApartmentNumber(apartmentDetails.getApartmentNumber());
-        apartment.setArea(apartmentDetails.getArea());
-        apartment.setNumberOfRooms(apartmentDetails.getNumberOfRooms());
-        apartment.setStorageUnit(apartmentDetails.getStorageUnit());
-        apartment.setParkingSpotNumber(apartmentDetails.getParkingSpotNumber());
-
-        apartment.setRentPayments(apartmentDetails.getRentPayments());
-        apartment.setMeterReadings(apartmentDetails.getMeterReadings());
-        apartment.setExpenses(apartmentDetails.getExpenses());
-
-        Apartment updated = apartmentService.saveApartment(apartment);
-        return ResponseEntity.ok(updated);
+                    Apartment updated = apartmentService.saveApartment(existing);
+                    return ResponseEntity.ok(updated);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")

@@ -1,11 +1,14 @@
 .detail-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem;
-  color: white;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .detail-header {
+  width: 100%;
+  max-width: 1000px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -14,79 +17,90 @@
   gap: 1rem;
 }
 
-.back-btn, .edit-btn, .save-btn, .cancel-btn, .add-small-btn {
-  padding: 0.8rem 1.5rem;
-  border: none;
+.back-btn, .edit-btn, .save-btn, .cancel-btn {
+  padding: 0.6rem 1.4rem;
   border-radius: 50px;
-  cursor: pointer;
   font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
 }
 
-.back-btn { background: rgba(255,255,255,0.2); }
-.edit-btn { background: #00d4ff; }
-.save-btn { background: #4ade80; }
-.cancel-btn { background: #ef4444; }
-.add-small-btn { background: #10b981; font-size: 0.9rem; padding: 0.5rem 1rem; }
-
 .detail-card {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(12px);
-  border-radius: 20px;
-  padding: 3rem;
-  max-width: 1000px;
-  margin: 0 auto;
-  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2rem; /* mniej paddingu */
+  border-radius: 16px;
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.detail-card h1 {
+  font-size: 2.4rem; /* było 3rem */
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  margin: 2rem 0;
-  font-size: 1.1rem;
+  gap: 1.2rem;
+  margin-bottom: 2.5rem;
+  font-size: 1.1rem; /* lekko zmniejszone */
+}
+
+.detail-grid div {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.detail-grid strong {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: #00d4ff;
 }
 
 .section {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255,255,255,0.3);
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .section h2 {
+  font-size: 1.8rem; /* było 2.2rem */
   margin-bottom: 1rem;
-  font-size: 1.8rem;
+  color: #00d4ff;
 }
 
 .list-item {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.08);
   padding: 1rem;
   border-radius: 12px;
-  margin: 0.8rem 0;
+  margin-bottom: 0.8rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.8rem;
   align-items: center;
+  font-size: 1rem;
 }
 
-.list-item input, .list-item select {
-  padding: 0.6rem;
-  border-radius: 8px;
-  border: none;
-  background: rgba(255,255,255,0.2);
-  color: white;
+.add-small-btn {
+  background: #10b981;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
 }
 
 .delete-btn {
   background: #ef4444;
-  color: white;
-  border: none;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
+  font-size: 0.9rem;
 }
 
 .loading {
   text-align: center;
-  font-size: 2rem;
-  padding: 4rem;
+  font-size: 1.6rem;
+  padding: 3rem;
 }

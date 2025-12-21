@@ -11,57 +11,60 @@ public class Apartment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column(nullable = false)
+    @Column(name = "city", nullable = false)
     private String city;
 
-    @Column(nullable = false)
+    @Column(name = "postal_code", nullable = false, length = 6)
     private String postalCode;
 
-    @Column(nullable = false)
+    @Column(name = "street", nullable = false)
     private String street;
 
-    @Column(nullable = false)
-    private Integer houseNumber;
+    @Column(name = "house_number", nullable = false)
+    private int houseNumber;
 
-    @Column(nullable = false)
-    private Integer apartmentNumber;
+    @Column(name = "apartment_number", nullable = false)
+    private int apartmentNumber;
 
-    @Column(nullable = false)
-    private Double area;
+    @Column(name = "area", nullable = false)
+    private double area;
 
-    @Column(nullable = false)
-    private Integer numberOfRooms;
+    @Column(name = "number_of_rooms", nullable = false)
+    private int numberOfRooms;
 
-    @Column(nullable = false)
-    private Boolean storageUnit;
+    @Column(name = "storage_unit", nullable = false)
+    private boolean storageUnit;
 
+    @Column(name = "parking_spot_number")
     private Integer parkingSpotNumber;
 
-    // ================= NOWE FUNKCJE =================
+    @Column(name = "balcony_terrace_area")
+    private Double balconyTerraceArea;
 
-    // 1. Lista opłat czynszowych z datami ważności
+    @Column(name = "garage_number")
+    private String garageNumber;
+
+    // === BRAKUJĄCE LISTY ===
     @ElementCollection
     @CollectionTable(name = "rent_payments", joinColumns = @JoinColumn(name = "apartment_id"))
     private List<RentPayment> rentPayments = new ArrayList<>();
 
-    // 2. Historia stanu licznika (prąd/woda/gaz)
     @ElementCollection
     @CollectionTable(name = "meter_readings", joinColumns = @JoinColumn(name = "apartment_id"))
     private List<MeterReading> meterReadings = new ArrayList<>();
 
-    // 3. Dowolne wydatki związane z mieszkaniem
     @ElementCollection
     @CollectionTable(name = "expenses", joinColumns = @JoinColumn(name = "apartment_id"))
     private List<Expense> expenses = new ArrayList<>();
 
-    // ================= KONSTRUKTORY =================
+    // Konstruktor pusty
     public Apartment() {}
 
-    // ================= GETTERY I SETTERY =================
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Gettery i settery (wszystkie istniejące + nowe listy)
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getCity() { return city; }
     public void setCity(String city) { this.city = city; }
@@ -72,25 +75,31 @@ public class Apartment {
     public String getStreet() { return street; }
     public void setStreet(String street) { this.street = street; }
 
-    public Integer getHouseNumber() { return houseNumber; }
-    public void setHouseNumber(Integer houseNumber) { this.houseNumber = houseNumber; }
+    public int getHouseNumber() { return houseNumber; }
+    public void setHouseNumber(int houseNumber) { this.houseNumber = houseNumber; }
 
-    public Integer getApartmentNumber() { return apartmentNumber; }
-    public void setApartmentNumber(Integer apartmentNumber) { this.apartmentNumber = apartmentNumber; }
+    public int getApartmentNumber() { return apartmentNumber; }
+    public void setApartmentNumber(int apartmentNumber) { this.apartmentNumber = apartmentNumber; }
 
-    public Double getArea() { return area; }
-    public void setArea(Double area) { this.area = area; }
+    public double getArea() { return area; }
+    public void setArea(double area) { this.area = area; }
 
-    public Integer getNumberOfRooms() { return numberOfRooms; }
-    public void setNumberOfRooms(Integer numberOfRooms) { this.numberOfRooms = numberOfRooms; }
+    public int getNumberOfRooms() { return numberOfRooms; }
+    public void setNumberOfRooms(int numberOfRooms) { this.numberOfRooms = numberOfRooms; }
 
-    public Boolean getStorageUnit() { return storageUnit; }
-    public void setStorageUnit(Boolean storageUnit) { this.storageUnit = storageUnit; }
+    public boolean isStorageUnit() { return storageUnit; }
+    public void setStorageUnit(boolean storageUnit) { this.storageUnit = storageUnit; }
 
     public Integer getParkingSpotNumber() { return parkingSpotNumber; }
     public void setParkingSpotNumber(Integer parkingSpotNumber) { this.parkingSpotNumber = parkingSpotNumber; }
 
-    // Nowe listy
+    public Double getBalconyTerraceArea() { return balconyTerraceArea; }
+    public void setBalconyTerraceArea(Double balconyTerraceArea) { this.balconyTerraceArea = balconyTerraceArea; }
+
+    public String getGarageNumber() { return garageNumber; }
+    public void setGarageNumber(String garageNumber) { this.garageNumber = garageNumber; }
+
+    // Gettery i settery dla list
     public List<RentPayment> getRentPayments() { return rentPayments; }
     public void setRentPayments(List<RentPayment> rentPayments) { this.rentPayments = rentPayments; }
 

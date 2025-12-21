@@ -3,10 +3,9 @@
   line-height: 1.5;
   font-weight: 400;
 
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: dark;
+  color: #ffffff;
+  background-color: #1e1e1e;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -14,59 +13,97 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #1e1e1e; /* Podstawowe ciemnoszare tło */
+  color: #ffffff;
+  position: relative;
+}
+
+/* Dwa punkty rozjaśnienia – dokładnie według Twojego opisu */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 25% 75%, #3a3a3a 0%, transparent 45%),
+    radial-gradient(circle at 75% 25%, #3a3a3a 0%, transparent 45%),
+    #1e1e1e;
+  z-index: -1;
+}
+
+/* Dodatkowe subtelne rozjaśnienie w centrum */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, #2a2a2a 0%, transparent 60%);
+  z-index: -1;
+  opacity: 0.7;
+}
+
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: #00d4ff;
+  text-decoration: none;
 }
+
 a:hover {
-  color: #535bf2;
+  color: #00aacc;
 }
-
-body {
-  background: linear-gradient(to bottom, #01c1f3, #bce1eb);
-  color: #213547;
-  margin: 0;
-  width: 100%;
-  min-width: 320px;
-  min-height: 100vh;
-  display: block; /* zamiast flex */
-}
-
 
 h1 {
-  font-size: 3.2em;
+  font-size: 3.2rem;
   line-height: 1.1;
+  margin: 0 0 2rem 0;
+  text-align: center;
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+  border-radius: 50px;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  font-size: 1.1rem;
+  font-weight: bold;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #ff0000;
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button:hover {
+  background-color: #cc0000;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto #00d4ff;
+}
+
+input, select {
+  border-radius: 12px;
+  border: none;
+  padding: 1rem;
+  font-size: 1.1rem;
+  background-color: #333333;
+  color: white;
+  width: 100%;
+}
+
+input::placeholder {
+  color: #aaaaaa;
 }

@@ -1,96 +1,101 @@
 .dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 2rem;
+  padding: 1.5rem; /* mniejszy padding */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .dashboard-header {
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem; /* zmniejszone */
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.logout-btn {
-  background: rgba(255,255,255,0.2);
-  border: 1px solid white;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
+.dashboard-header h1 {
+  font-size: 2.2rem; /* było 2.8rem */
+  margin: 0;
 }
 
-.logout-btn:hover {
-  background: white;
-  color: #667eea;
+.header-buttons {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
 }
 
-.apartments-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.apartment-card {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 1.5rem;
+.add-btn, .logout-btn {
+  padding: 0.6rem 1.4rem; /* mniejsze przyciski */
+  border-radius: 50px;
+  font-weight: bold;
+  font-size: 1rem; /* mniejsza czcionka */
   cursor: pointer;
   transition: all 0.3s;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: none;
 }
 
-.apartment-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-}
-
-.card-city {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.card-address {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  margin-bottom: 1rem;
-}
-
-.card-details {
-  display: flex;
-  gap: 1rem;
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-}
-
-.card-features {
+.apartments-list {
+  width: 100%;
+  max-width: 1000px;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.9rem;
-  opacity: 0.8;
+  gap: 1.2rem; /* mniejsza przerwa między kartami */
+}
+
+.apartment-item {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1.5rem; /* mniej paddingu */
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  border-left: 4px solid #ff0000;
+}
+
+.apartment-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+}
+
+.item-city {
+  font-size: 1.6rem; /* było 2rem */
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
+.item-address {
+  font-size: 1.1rem; /* było 1.3rem */
+  margin-bottom: 0.8rem;
+  opacity: 0.9;
+}
+
+.item-details {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.8rem;
+  font-size: 1rem; /* było 1.1rem */
+  flex-wrap: wrap;
+}
+
+.item-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  font-size: 0.9rem; /* było 1rem */
+}
+
+.item-features span {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
 }
 
 .loading {
   text-align: center;
-  font-size: 1.5rem;
-  padding: 4rem;
+  font-size: 1.6rem;
+  padding: 3rem;
 }
-
-.add-btn {
-  background: #00d4ff;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  margin-bottom: 2rem;
-}
-.add-btn:hover { background: #00b0d4; }

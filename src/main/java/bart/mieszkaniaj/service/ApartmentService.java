@@ -50,6 +50,8 @@ public class ApartmentService {
             a1.setNumberOfRooms(4);
             a1.setStorageUnit(true);
             a1.setParkingSpotNumber(42);
+            a1.setBalconyTerraceArea(10.0);  // New
+            a1.setGarageNumber("G1");  // New
             apartmentRepository.save(a1);
 
             Apartment a2 = new Apartment();
@@ -62,6 +64,8 @@ public class ApartmentService {
             a2.setNumberOfRooms(3);
             a2.setStorageUnit(false);
             a2.setParkingSpotNumber(null);
+            a2.setBalconyTerraceArea(7.0);  // New
+            a2.setGarageNumber("25");  // New
             apartmentRepository.save(a2);
 
             Apartment a3 = new Apartment();
@@ -74,6 +78,8 @@ public class ApartmentService {
             a3.setNumberOfRooms(5);
             a3.setStorageUnit(true);
             a3.setParkingSpotNumber(101);
+            a3.setBalconyTerraceArea(12.0);  // New
+            a3.setGarageNumber("77");  // New
             apartmentRepository.save(a3);
 
             Apartment a4 = new Apartment();
@@ -86,6 +92,8 @@ public class ApartmentService {
             a4.setNumberOfRooms(2);
             a4.setStorageUnit(false);
             a4.setParkingSpotNumber(null);
+            a4.setBalconyTerraceArea(10.0);  // New
+            a4.setGarageNumber("G1");  // New
             apartmentRepository.save(a4);
 
             Apartment a5 = new Apartment();
@@ -98,6 +106,8 @@ public class ApartmentService {
             a5.setNumberOfRooms(3);
             a5.setStorageUnit(true);
             a5.setParkingSpotNumber(15);
+            a5.setBalconyTerraceArea(10.0);  // New
+            a5.setGarageNumber("G1");  // New
             apartmentRepository.save(a5);
 
             System.out.println("Gotowe! Dodano 5 przykładowych mieszkań.");
