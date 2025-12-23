@@ -41,11 +41,6 @@ public class UserService {
             admin.setPassword(passwordEncoder.encode("admin123"));
             userRepository.save(admin);
 
-            User user1 = new User();
-            user1.setUsername("user1");
-            user1.setPassword(passwordEncoder.encode("haslo123"));
-            userRepository.save(user1);
-
             System.out.println("=============================================");
             System.out.println("UTWORZONO KONTA:");
             System.out.println("admin   → hasło: admin123");
