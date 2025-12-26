@@ -5,6 +5,7 @@ import ContractorsTab from "../components/tabs/ContractorsTab";
 import "./Dashboard.css";
 import AgreementsTab from "../components/tabs/AgreementsTab";
 import FinancialTab from "../components/tabs/FinancialTab";
+import AnalyticsTab from "../components/tabs/AnalyticsTab";
 
 const logout = () => {
   localStorage.removeItem("token");
@@ -30,7 +31,7 @@ function Dashboard() {
       case "finansowa":
         return <FinancialTab />;
       case "analityka":
-        return <div className="tab-content"><h2>Analityka</h2><p>Tu będą raporty</p></div>;
+        return <AnalyticsTab />;
       case "wydarzenia":
         return <div className="tab-content"><h2>Baza wydarzeń</h2><p>Tu będzie tabela wydarzeń</p></div>;
       default:

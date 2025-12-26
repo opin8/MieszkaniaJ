@@ -56,8 +56,8 @@ function ApartmentsTab() {
   const handleSave = async () => {
     if (!editForm || !editForm.id) return;
     try {
-      await api.put(`/apartments/${editForm.id}`, editForm);
-      setApartments(apartments.map(a => (a.id === editForm.id ? editForm : a)));
+      const updated = await api.put<Apartment>(`/apartments/${editForm.id}`, editForm);
+      setApartments(apartments.map(a => (a.id === editForm.id ? updated.data : a)));
       setSelectedApartment(null);
       setEditForm(null);
     } catch (err) {
@@ -132,7 +132,7 @@ function ApartmentsTab() {
         </button>
       </div>
 
-      {/* Tabela mieszkań */}
+      {/* Tabela z WSZYSTKIMI kolumnami */}
       <table className="data-table">
         <thead>
           <tr>
@@ -144,8 +144,8 @@ function ApartmentsTab() {
             <th>Metraż [m²]</th>
             <th>Liczba pokoi</th>
             <th>Komórka lokatorska</th>
-            <th>Numer miejsca postojowych</th>
-            <th>Metraż balkonu/tarasu</th>
+            <th>Numery miejsc postojowych</th>
+            <th>Metraż balkonu</th>
             <th>Numer garażu</th>
             <th>ID mieszkania</th>
           </tr>
@@ -158,11 +158,11 @@ function ApartmentsTab() {
               <td>{apt.street}</td>
               <td>{apt.houseNumber}</td>
               <td>{apt.apartmentNumber}</td>
-              <td>{apt.area}</td>
+              <td>{apt.area.toFixed(1)}</td>
               <td>{apt.numberOfRooms}</td>
               <td>{apt.storageUnit ? "Tak" : "Nie"}</td>
               <td>{apt.parkingSpotNumber || "—"}</td>
-              <td>{apt.balconyTerraceArea || "—"}</td>
+              <td>{apt.balconyTerraceArea?.toFixed(1) || "—"}</td>
               <td>{apt.garageNumber || "—"}</td>
               <td>{apt.id}</td>
             </tr>
@@ -170,7 +170,7 @@ function ApartmentsTab() {
         </tbody>
       </table>
 
-      {/* Formularz edycji lub dodawania */}
+      {/* Formularz edycji/dodawania */}
       {(selectedApartment || addMode) && (
         <div className="edit-panel">
           <h3>{addMode ? "Dodawanie nowego mieszkania" : "Panel edycji"}</h3>

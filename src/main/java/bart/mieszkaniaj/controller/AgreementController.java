@@ -43,11 +43,10 @@ public class AgreementController {
         existing.setCategory(agreementDetails.getCategory());
         existing.setDateFrom(agreementDetails.getDateFrom());
         existing.setDateTo(agreementDetails.getDateTo());
-        existing.setNetValue(agreementDetails.getNetValue());
+        existing.setMonthlyNetValue(agreementDetails.getMonthlyNetValue());
         existing.setVatRate(agreementDetails.getVatRate());
         existing.setDescription(agreementDetails.getDescription());
         existing.setTaxOperation(agreementDetails.isTaxOperation());
-        existing.setPaid(agreementDetails.isPaid());
 
         Agreement updated = agreementService.saveAgreement(existing);
         return ResponseEntity.ok(updated);

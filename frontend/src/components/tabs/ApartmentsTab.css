@@ -1,6 +1,6 @@
 .tab-content {
   width: 100%;
-  max-width: 1200px;
+  max-width: none;
   margin: 0 auto;
   padding: 1rem;
 }
@@ -31,7 +31,7 @@
   font-size: 1rem;
 }
 
-/* Tabela mieszkań */
+/* Tabela mieszkań – wszystkie kolumny, lepiej dopasowane */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -41,20 +41,23 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  table-layout: auto; /* kolumny dostosowują się do treści */
 }
 
 .data-table th,
 .data-table td {
   border: 1px solid #555555;
-  padding: 0.8rem 0.6rem;
-  text-align: left;
+  padding: 0.8rem 0.5rem;
+  text-align: center;
   font-size: 0.95rem;
+  vertical-align: middle;
 }
 
 .data-table th {
   background: #444444;
   font-weight: bold;
   color: #00d4ff;
+  white-space: nowrap;
 }
 
 .table-row {
@@ -66,7 +69,21 @@
   background: #444444;
 }
 
-/* Panel edycji / dodawania – szerokie okno, ale pola węższe */
+/* Optymalne szerokości kolumn – mniej miejsca na krótkie dane */
+.data-table th:nth-child(1), .data-table td:nth-child(1) { width: 8%; } /* Miejscowość */
+.data-table th:nth-child(2), .data-table td:nth-child(2) { width: 4%; }  /* Kod pocztowy */
+.data-table th:nth-child(3), .data-table td:nth-child(3) { width: 14%; } /* Ulica */
+.data-table th:nth-child(4), .data-table td:nth-child(4) { width: 6%; }  /* Numer ulicy */
+.data-table th:nth-child(5), .data-table td:nth-child(5) { width: 7%; }  /* Numer mieszkania */
+.data-table th:nth-child(6), .data-table td:nth-child(6) { width: 8%; }  /* Metraż [m²] */
+.data-table th:nth-child(7), .data-table td:nth-child(7) { width: 6%; }  /* Liczba pokoi */
+.data-table th:nth-child(8), .data-table td:nth-child(8) { width: 8%; }  /* Komórka lokatorska */
+.data-table th:nth-child(9), .data-table td:nth-child(9) { width: 8%; }  /* Numer miejsca postojowych */
+.data-table th:nth-child(10), .data-table td:nth-child(10) { width: 8%; } /* Metraż balkonu/tarasu */
+.data-table th:nth-child(11), .data-table td:nth-child(11) { width: 8%; } /* Numer garażu */
+.data-table th:nth-child(12), .data-table td:nth-child(12) { width: 5%; } /* ID mieszkania */
+
+/* Panel edycji / dodawania */
 .edit-panel {
   background: #333333;
   padding: 2.5rem;
@@ -83,12 +100,11 @@
   text-align: center;
 }
 
-/* Formularz – węższe pola, więcej w rzędzie */
 .edit-form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.5rem;
-  justify-items: center; /* centrujemy pola w komórkach */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.2rem;
+  justify-items: center;
 }
 
 .edit-form label {
@@ -97,7 +113,7 @@
   color: #cccccc;
   font-size: 0.95rem;
   width: 100%;
-  max-width: 300px; /* maksymalna szerokość pola */
+  max-width: 300px;
 }
 
 .edit-form input,
@@ -109,7 +125,6 @@
   background: #555555;
   color: white;
   font-size: 1rem;
-  width: 100%; /* wypełnia label, ale label ma max-width */
 }
 
 .edit-form input::placeholder {
@@ -122,7 +137,6 @@
   transform: scale(1.2);
 }
 
-/* Przyciski edycji */
 .edit-buttons {
   grid-column: 1 / -1;
   display: flex;

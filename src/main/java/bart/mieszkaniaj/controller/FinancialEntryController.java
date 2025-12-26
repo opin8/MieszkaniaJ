@@ -54,6 +54,12 @@ public class FinancialEntryController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/generate-from-agreements")
+    public ResponseEntity<String> generateFromAgreements() {
+        financialEntryService.generateFromAgreements();
+        return ResponseEntity.ok("Rekordy wygenerowane pomyślnie");
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFinancialEntry(@PathVariable int id) {
         financialEntryService.deleteFinancialEntry(id);

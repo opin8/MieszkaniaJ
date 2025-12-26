@@ -1,6 +1,6 @@
 .tab-content {
   width: 100%;
-  max-width: 1200px;
+  max-width: none;
   margin: 0 auto;
   padding: 1rem;
 }
@@ -35,7 +35,7 @@
 .filters {
   display: flex;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -45,10 +45,11 @@
   flex-direction: column;
   min-width: 180px;
   color: #cccccc;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
-.filters select, .filters input[type="date"] {
+.filters select,
+.filters input[type="date"] {
   margin-top: 0.4rem;
   padding: 0.6rem;
   border-radius: 10px;
@@ -94,7 +95,7 @@
   left: 26px;
 }
 
-/* Tabela wydatków */
+/* Tabela wydatków – NAPRAWA ZAWijanIA DATY */
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -104,6 +105,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  table-layout: fixed; /* ważne – kolumny mają stałą szerokość */
 }
 
 .data-table th,
@@ -112,12 +114,56 @@
   padding: 0.8rem 0.6rem;
   text-align: left;
   font-size: 0.95rem;
+  white-space: nowrap; /* tekst nie zawija się */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .data-table th {
   background: #444444;
   font-weight: bold;
   color: #00d4ff;
+}
+
+/* Szerokość kolumn – dostosowana, żeby data się mieściła */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+  width: 20%; /* Powiązane mieszkanie */
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+  width: 18%; /* Kategoria */
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+  width: 10%; /* Data – wystarczająco szeroka */
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+  width: 12%; /* Kwota brutto */
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+  width: 8%; /* VAT */
+}
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+  width: 15%; /* Opis */
+}
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) {
+  width: 12%; /* Operacja podatkowa */
+}
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) {
+  width: 10%; /* Opłacono */
 }
 
 .table-row {
@@ -129,7 +175,7 @@
   background: #444444;
 }
 
-/* Kolumna "Opłacono" – zielone/czerwone */
+/* Kolumna "Opłacono" */
 .paid-yes {
   background-color: #1e4d2b !important;
   color: #4ade80;
@@ -150,21 +196,18 @@
   padding: 2.5rem;
   border-radius: 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .edit-panel h3 {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   color: #00d4ff;
-  font-size: 1.8rem;
+  font-size: 2rem;
   text-align: center;
 }
 
-/* Formularz – pola węższe */
 .edit-form {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
 }
 
@@ -172,61 +215,65 @@
   display: flex;
   flex-direction: column;
   color: #cccccc;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .edit-form input,
 .edit-form select {
-  margin-top: 0.4rem;
-  padding: 0.8rem;
+  margin-top: 0.5rem;
+  padding: 1rem;
   border-radius: 12px;
   border: none;
   background: #555555;
   color: white;
-  font-size: 1rem;
-  max-width: 100%;
+  font-size: 1.1rem;
 }
 
 .edit-form input::placeholder {
   color: #aaaaaa;
 }
 
+.edit-form input[type="checkbox"] {
+  width: auto;
+  margin-top: 1rem;
+  transform: scale(1.3);
+}
+
 .edit-buttons {
   grid-column: 1 / -1;
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .save-btn {
   background: #4ade80;
-  padding: 0.8rem 1.8rem;
-  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
 }
 
 .delete-btn {
   background: #ef4444;
-  padding: 0.8rem 1.8rem;
-  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
 }
 
 .clear-btn {
   background: #666666;
-  padding: 0.8rem 1.8rem;
-  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
 }
 
 .cancel-btn {
   background: #888888;
-  padding: 0.8rem 1.8rem;
-  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
 }
 
 .loading {
   text-align: center;
-  font-size: 1.8rem;
-  padding: 3rem;
+  font-size: 2rem;
+  padding: 4rem;
   color: #cccccc;
 }

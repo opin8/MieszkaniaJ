@@ -1,0 +1,273 @@
+.tab-content {
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.tab-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #00d4ff;
+}
+
+/* Filtry */
+.analytics-filters {
+  background: #333333;
+  padding: 2rem;
+  border-radius: 20px;
+  margin-bottom: 3rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Grupa filtrów z przyciskiem po prawej */
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #cccccc;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.toggle-btn {
+  background: #666666;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.toggle-btn.active {
+  background: #4ade80;
+}
+
+/* Lista wyboru (mieszkania/kategorie) – bez kwadratu tick, całe pole klikalne */
+.multi-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 200px;
+  overflow-y: auto;
+  background: #444444;
+  padding: 0.8rem;
+  border-radius: 12px;
+}
+
+.multi-select label {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multi-select label:hover {
+  background: #555555;
+}
+
+.multi-select input[type="checkbox"] {
+  display: none; /* ukryty kwadrat tick */
+}
+
+.multi-select input[type="checkbox"] + span {
+  flex: 1;
+}
+
+.multi-select input[type="checkbox"]:checked + span {
+  background: #4ade80;
+  color: white;
+  border-radius: 8px;
+  padding: 0.6rem;
+}
+
+/* Przełącznik "Tylko opłacone" – bez kwadratu tick */
+.paid-toggle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.paid-toggle input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-switch {
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  background: #666666;
+  border-radius: 50px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toggle-switch.active {
+  background: #4ade80;
+}
+
+.toggle-switch::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: left 0.3s;
+}
+
+.toggle-switch.active::after {
+  left: 32px;
+}
+
+.load-btn {
+  background: #00d4ff;
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  margin: 1rem auto;
+  display: block;
+}
+
+/* Podsumowanie */
+.analytics-results {
+  background: #333333;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+.summary-cards {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #444444;
+  padding: 1.5rem;
+  border-radius: 16px;
+  text-align: center;
+  min-width: 200px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.card h4 {
+  margin-bottom: 1rem;
+  color: #00d4ff;
+}
+
+.card.profit.positive p {
+  color: #4ade80; /* zielony dla dodatniego */
+}
+
+.card.profit.negative p {
+  color: #ef4444; /* czerwony dla ujemnego */
+}
+
+.card.profit p {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.card.profit p {
+  color: #4ade80;
+}
+
+/* Tabele */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+  background: #444444;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #555555;
+  padding: 1rem;
+  text-align: left;
+}
+
+.data-table th {
+  background: #555555;
+  color: #00d4ff;
+}
+
+.loading {
+  text-align: center;
+  font-size: 2rem;
+  padding: 4rem;
+  color: #cccccc;
+}
+
+/* Multi-select – zaznaczone elementy widoczne */
+.multi-select label {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multi-select input[type="checkbox"] {
+  display: none; /* ukryty kwadrat */
+}
+
+.multi-select label.selected {
+  background: #4ade80 !important;
+  color: white;
+  font-weight: bold;
+}
+
+.multi-select label:hover {
+  background: #555555;
+}
+
+/* Przycisk "Zaznacz wszystkie" po prawej */
+.filter-group label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-btn {
+  background: #666666;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.toggle-btn.active {
+  background: #4ade80;
+}

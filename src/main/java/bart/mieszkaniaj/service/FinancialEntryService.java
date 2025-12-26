@@ -1,7 +1,9 @@
 package bart.mieszkaniaj.service;
 
+import bart.mieszkaniaj.model.Agreement;
 import bart.mieszkaniaj.model.Apartment;
 import bart.mieszkaniaj.model.FinancialEntry;
+import bart.mieszkaniaj.repository.AgreementRepository;
 import bart.mieszkaniaj.repository.ApartmentRepository;
 import bart.mieszkaniaj.repository.FinancialEntryRepository;
 import jakarta.annotation.PostConstruct;
@@ -16,10 +18,12 @@ public class FinancialEntryService {
 
     private final FinancialEntryRepository financialEntryRepository;
     private final ApartmentRepository apartmentRepository;
+    private final AgreementRepository agreementRepository;
 
-    public FinancialEntryService(FinancialEntryRepository financialEntryRepository, ApartmentRepository apartmentRepository) {
+    public FinancialEntryService(FinancialEntryRepository financialEntryRepository, ApartmentRepository apartmentRepository, AgreementRepository agreementRepository) {
         this.financialEntryRepository = financialEntryRepository;
         this.apartmentRepository = apartmentRepository;
+        this.agreementRepository = agreementRepository;
     }
 
     public List<FinancialEntry> getAllFinancialEntries() {
@@ -36,6 +40,37 @@ public class FinancialEntryService {
 
     public void deleteFinancialEntry(int id) {
         financialEntryRepository.deleteById(id);
+    }
+
+    public void generateFromAgreements() {
+        LocalDate today = LocalDate.now();
+        LocalDate firstOfMonth = today.withDayOfMonth(1);
+
+        List<Agreement> activeAgreements = agreementRepository.findAll().stream()
+                .filter(a -> a.getDateFrom() != null && !a.getDateFrom().isAfter(firstOfMonth))
+                .filter(a -> a.getDateTo() == null || !a.getDateTo().isBefore(firstOfMonth))
+                .toList();
+
+        for (Agreement agreement : activeAgreements) {
+            // Sprawdzamy, czy rekord na ten miesiąc już istnieje
+            boolean exists = financialEntryRepository.findAll().stream()
+                    .anyMatch(e -> e.getApartment() != null && e.getApartment().getId() == agreement.getApartment().getId()
+                            && e.getCategory().equals(agreement.getCategory())
+                            && e.getDate().equals(firstOfMonth));
+
+            if (!exists) {
+                FinancialEntry entry = new FinancialEntry();
+                entry.setApartment(agreement.getApartment());
+                entry.setCategory(agreement.getCategory());
+                entry.setDate(firstOfMonth);
+                entry.setNetAmount(agreement.getMonthlyNetValue()); // brutto z umowy
+                entry.setVatRate(agreement.getVatRate());
+                entry.setDescription("Automatycznie z umowy #" + agreement.getId());
+                entry.setTaxOperation(agreement.isTaxOperation());
+                entry.setPaid(false); // domyślnie nieopłacone
+                financialEntryRepository.save(entry);
+            }
+        }
     }
 
     @PostConstruct

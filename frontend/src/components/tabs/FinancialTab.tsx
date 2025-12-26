@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import { formatDate } from "../../utils/dateUtils";
 import "./FinancialTab.css";
 
 interface FinancialEntry {
@@ -123,6 +124,20 @@ function FinancialTab() {
     }
   };
 
+  // NOWY PRZYCISK – generowanie rekordów z umów
+  const handleGenerateFromAgreements = async () => {
+    if (!confirm("Wygenerować rekordy finansowe na podstawie aktywnych umów dla bieżącego miesiąca?")) return;
+    try {
+      await api.post("/financial-entries/generate-from-agreements");
+      alert("Rekordy wygenerowane pomyślnie!");
+      // Odśwież tabelę
+      const res = await api.get<FinancialEntry[]>("/financial-entries");
+      setEntries(res.data);
+    } catch (err) {
+      alert("Błąd podczas generowania rekordów");
+    }
+  };
+
   const handleDelete = async () => {
     if (!selectedEntry) return;
     if (!confirm("Czy na pewno usunąć ten wydatek?")) return;
@@ -159,9 +174,14 @@ function FinancialTab() {
     <div className="tab-content">
       <div className="tab-header">
         <h2>Baza finansowa</h2>
-        <button onClick={() => setAddMode(true)} className="add-btn">
-          + Dodaj nowy wydatek
-        </button>
+        <div className="header-buttons">
+          <button onClick={handleGenerateFromAgreements} className="generate-btn">
+            Wygeneruj rekordy na podstawie umów
+          </button>
+          <button onClick={() => setAddMode(true)} className="add-btn">
+            + Dodaj nowy wydatek
+          </button>
+        </div>
       </div>
 
       {/* Filtry */}
@@ -228,7 +248,7 @@ function FinancialTab() {
             <th>Powiązane mieszkanie</th>
             <th>Kategoria wydatku</th>
             <th>Data</th>
-            <th>Kwota netto</th>
+            <th>Kwota brutto</th>
             <th>VAT</th>
             <th>Opis</th>
             <th>Operacja podatkowa</th>
@@ -240,7 +260,7 @@ function FinancialTab() {
             <tr key={e.id} onClick={() => handleRowClick(e)} className="table-row">
               <td>{e.apartment ? `${e.apartment.street} ${e.apartment.houseNumber}` : "—"}</td>
               <td>{e.category}</td>
-              <td>{e.date}</td>
+              <td>{formatDate(e.date)}</td>
               <td>{e.netAmount.toFixed(2)} zł</td>
               <td>{e.vatRate.toFixed(2)}%</td>
               <td>{e.description || "—"}</td>
@@ -315,7 +335,7 @@ function FinancialTab() {
               />
             </label>
             <label>
-              Kwota netto
+              Kwota brutto
               <input
                 type="number"
                 step="0.01"

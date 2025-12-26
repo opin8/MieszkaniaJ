@@ -13,16 +13,83 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Globalne zmniejszenie czcionki – wszystko mniejsze i więcej miejsca */
+html, body {
+  font-size: 13px !important; /* baza mniejsza niż standardowe 16px */
+}
+
+h1 {
+  font-size: 2.4rem !important;
+}
+
+h2 {
+  font-size: 2rem !important;
+}
+
+h3 {
+  font-size: 1.6rem !important;
+}
+
+h4 {
+  font-size: 1.4rem !important;
+}
+
+/* Tabele – mniejsze czcionki i padding */
+.data-table th,
+.data-table td {
+  font-size: 0.9rem !important;
+  padding: 0.6rem 0.4rem !important;
+}
+
+.data-table th {
+  font-size: 0.95rem !important;
+}
+
+/* Formularze – mniejsze pola */
+.edit-form input,
+.edit-form select,
+.filters input,
+.filters select {
+  font-size: 0.95rem !important;
+  padding: 0.6rem !important;
+}
+
+/* Przyciski – mniejsze */
+button,
+.add-btn,
+.generate-btn,
+.toggle-btn {
+  font-size: 0.95rem !important;
+  padding: 0.5rem 1.2rem !important;
+}
+
+/* Specjalnie dla przycisków w nagłówkach */
+.add-btn,
+.generate-btn {
+  font-size: 1rem !important;
+  padding: 0.6rem 1.4rem !important;
+}
+
+/* Multi-select i filtry */
+.multi-select label {
+  font-size: 0.9rem !important;
+}
+
+/* Podsumowanie w analityce */
+.summary-cards .card p {
+  font-size: 1.6rem !important;
+}
+
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  background: #1e1e1e; /* Podstawowe ciemnoszare tło */
+  background: #1e1e1e;
   color: #ffffff;
   position: relative;
 }
 
-/* Dwa punkty rozjaśnienia – dokładnie według Twojego opisu */
+/* Tło z gradientami (z wcześniejszych zmian) */
 body::before {
   content: "";
   position: fixed;
@@ -38,7 +105,6 @@ body::before {
   z-index: -1;
 }
 
-/* Dodatkowe subtelne rozjaśnienie w centrum */
 body::after {
   content: "";
   position: fixed;
@@ -62,18 +128,9 @@ a:hover {
   color: #00aacc;
 }
 
-h1 {
-  font-size: 3.2rem;
-  line-height: 1.1;
-  margin: 0 0 2rem 0;
-  text-align: center;
-}
-
 button {
   border-radius: 50px;
   border: none;
-  padding: 0.8rem 1.8rem;
-  font-size: 1.1rem;
   font-weight: bold;
   font-family: inherit;
   background-color: #ff0000;
@@ -97,13 +154,37 @@ button:focus-visible {
 input, select {
   border-radius: 12px;
   border: none;
-  padding: 1rem;
-  font-size: 1.1rem;
   background-color: #333333;
   color: white;
-  width: 100%;
 }
 
 input::placeholder {
   color: #aaaaaa;
+}
+
+/* Globalne poprawki – wszystko mieści się w ekranie */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0 2rem; /* odstęp po bokach strony */
+  overflow-x: hidden; /* brak przewijania w prawo */
+}
+
+.tab-content {
+  padding: 1rem 0; /* mniej paddingu bocznego w tab-content */
+  overflow-x: hidden;
+}
+
+/* Nagłówek – przyciski nie wystają */
+.tab-header {
+  padding: 0 1rem;
+}
+
+/* Tabele – scroll wewnętrzny jeśli za szeroka */
+.data-table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
 }

@@ -1,6 +1,6 @@
 .tab-content {
   width: 100%;
-  max-width: 1200px;
+  max-width: none;
   margin: 0 auto;
   padding: 1rem;
 }
@@ -12,7 +12,6 @@
   color: #00d4ff;
 }
 
-/* Nagłówek z przyciskiem */
 .tab-header {
   display: flex;
   justify-content: space-between;
@@ -31,7 +30,6 @@
   font-size: 1rem;
 }
 
-/* Filtry */
 .filters {
   display: flex;
   gap: 1rem;

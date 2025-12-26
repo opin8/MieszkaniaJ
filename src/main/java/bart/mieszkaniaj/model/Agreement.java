@@ -20,7 +20,7 @@ public class Agreement {
     private Apartment apartment;
 
     @Column(name = "category", nullable = false)
-    private String category; // Czynsz najmu, Czynsz administracyjny itd.
+    private String category;
 
     @Column(name = "date_from", nullable = false)
     private LocalDate dateFrom;
@@ -28,8 +28,8 @@ public class Agreement {
     @Column(name = "date_to")
     private LocalDate dateTo;
 
-    @Column(name = "net_value", nullable = false)
-    private double netValue;
+    @Column(name = "monthly_net_value", nullable = false)
+    private double monthlyNetValue; // Kwota miesięczna (brutto)
 
     @Column(name = "vat_rate", nullable = false)
     private double vatRate;
@@ -40,9 +40,7 @@ public class Agreement {
     @Column(name = "tax_operation", nullable = false)
     private boolean taxOperation;
 
-    @Column(name = "paid", nullable = false)
-    private boolean paid;
-
+    // Konstruktor pusty
     public Agreement() {}
 
     // Gettery i settery
@@ -64,8 +62,8 @@ public class Agreement {
     public LocalDate getDateTo() { return dateTo; }
     public void setDateTo(LocalDate dateTo) { this.dateTo = dateTo; }
 
-    public double getNetValue() { return netValue; }
-    public void setNetValue(double netValue) { this.netValue = netValue; }
+    public double getMonthlyNetValue() { return monthlyNetValue; }
+    public void setMonthlyNetValue(double monthlyNetValue) { this.monthlyNetValue = monthlyNetValue; }
 
     public double getVatRate() { return vatRate; }
     public void setVatRate(double vatRate) { this.vatRate = vatRate; }
@@ -75,7 +73,4 @@ public class Agreement {
 
     public boolean isTaxOperation() { return taxOperation; }
     public void setTaxOperation(boolean taxOperation) { this.taxOperation = taxOperation; }
-
-    public boolean isPaid() { return paid; }
-    public void setPaid(boolean paid) { this.paid = paid; }
 }

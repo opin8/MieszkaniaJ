@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
+import { formatDate } from "../../utils/dateUtils";
 import "./AgreementsTab.css";
 
 interface Agreement {
@@ -9,11 +10,10 @@ interface Agreement {
   category: string;
   dateFrom: string;
   dateTo?: string | null;
-  netValue: number;
+  monthlyNetValue: number;
   vatRate: number;
   description?: string | null;
   taxOperation: boolean;
-  paid: boolean;
 }
 
 interface Contractor {
@@ -30,6 +30,7 @@ interface Apartment {
 function AgreementsTab() {
   const [agreements, setAgreements] = useState<Agreement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedAgreement, setSelectedAgreement] = useState<Agreement | null>(null);
   const [editForm, setEditForm] = useState<Agreement | null>(null);
   const [addMode, setAddMode] = useState(false);
@@ -39,11 +40,10 @@ function AgreementsTab() {
     category: "",
     dateFrom: "",
     dateTo: null,
-    netValue: 0,
+    monthlyNetValue: 0,
     vatRate: 0,
     description: null,
     taxOperation: false,
-    paid: false,
   });
 
   // Filtry
@@ -68,6 +68,7 @@ function AgreementsTab() {
         setApartments(apartmentsRes.data);
       } catch (err) {
         console.error("Błąd ładowania danych", err);
+        setError("Nie udało się załadować danych umów. Sprawdź konsolę.");
       } finally {
         setLoading(false);
       }
@@ -113,11 +114,10 @@ function AgreementsTab() {
         category: "",
         dateFrom: "",
         dateTo: null,
-        netValue: 0,
+        monthlyNetValue: 0,
         vatRate: 0,
         description: null,
         taxOperation: false,
-        paid: false,
       });
     } catch (err) {
       alert("Błąd dodawania umowy");
@@ -145,11 +145,10 @@ function AgreementsTab() {
         category: "",
         dateFrom: "",
         dateTo: null,
-        netValue: 0,
+        monthlyNetValue: 0,
         vatRate: 0,
         description: null,
         taxOperation: false,
-        paid: false,
       });
     } else {
       setEditForm(selectedAgreement ? { ...selectedAgreement } : null);
@@ -157,6 +156,7 @@ function AgreementsTab() {
   };
 
   if (loading) return <p className="loading">Ładowanie umów...</p>;
+  if (error) return <p className="error">{error}</p>;
 
   return (
     <div className="tab-content">
@@ -171,10 +171,7 @@ function AgreementsTab() {
       <div className="filters">
         <label>
           Kontrahent:
-          <select
-            value={contractorFilter || ""}
-            onChange={e => setContractorFilter(e.target.value ? Number(e.target.value) : null)}
-          >
+          <select value={contractorFilter || ""} onChange={e => setContractorFilter(e.target.value ? Number(e.target.value) : null)}>
             <option value="">Wszyscy</option>
             {contractors.map(c => (
               <option key={c.id} value={c.id}>
@@ -185,10 +182,7 @@ function AgreementsTab() {
         </label>
         <label>
           Nieruchomość:
-          <select
-            value={apartmentFilter || ""}
-            onChange={e => setApartmentFilter(e.target.value ? Number(e.target.value) : null)}
-          >
+          <select value={apartmentFilter || ""} onChange={e => setApartmentFilter(e.target.value ? Number(e.target.value) : null)}>
             <option value="">Wszystkie</option>
             {apartments.map(n => (
               <option key={n.id} value={n.id}>
@@ -199,10 +193,7 @@ function AgreementsTab() {
         </label>
         <label>
           Kategoria:
-          <select
-            value={categoryFilter || ""}
-            onChange={e => setCategoryFilter(e.target.value || null)}
-          >
+          <select value={categoryFilter || ""} onChange={e => setCategoryFilter(e.target.value || null)}>
             <option value="">Wszystkie</option>
             <option>Czynsz najmu</option>
             <option>Czynsz administracyjny</option>
@@ -226,11 +217,10 @@ function AgreementsTab() {
             <th>Kategoria umowy</th>
             <th>Data od</th>
             <th>Data do</th>
-            <th>Wartość netto</th>
+            <th>Kwota miesięczna</th>
             <th>Stawka VAT</th>
             <th>Opis</th>
             <th>Operacja podatkowa</th>
-            <th>Opłacono</th>
           </tr>
         </thead>
         <tbody>
@@ -239,15 +229,12 @@ function AgreementsTab() {
               <td>{u.contractor.name}</td>
               <td>{u.apartment.street} {u.apartment.houseNumber}</td>
               <td>{u.category}</td>
-              <td>{u.dateFrom}</td>
-              <td>{u.dateTo || "—"}</td>
-              <td>{u.netValue.toFixed(2)} zł</td>
+              <td>{formatDate(u.dateFrom)}</td>
+              <td>{u.dateTo ? formatDate(u.dateTo) : "—"}</td>
+              <td>{u.monthlyNetValue.toFixed(2)} zł</td>
               <td>{u.vatRate.toFixed(2)}%</td>
               <td>{u.description || "—"}</td>
               <td>{u.taxOperation ? "Tak" : "Nie"}</td>
-              <td className={u.paid ? "paid-yes" : "paid-no"}>
-                {u.paid ? "Tak" : "Nie"}
-              </td>
             </tr>
           ))}
         </tbody>
@@ -355,17 +342,17 @@ function AgreementsTab() {
               />
             </label>
             <label>
-              Wartość netto
+              Kwota miesięczna
               <input
                 type="number"
                 step="0.01"
-                value={(addMode ? newAgreement.netValue : editForm?.netValue) || ""}
+                value={(addMode ? newAgreement.monthlyNetValue : editForm?.monthlyNetValue) || ""}
                 onChange={e => {
                   const value = Number(e.target.value);
                   if (addMode) {
-                    setNewAgreement({ ...newAgreement, netValue: value });
+                    setNewAgreement({ ...newAgreement, monthlyNetValue: value });
                   } else if (editForm) {
-                    setEditForm({ ...editForm, netValue: value });
+                    setEditForm({ ...editForm, monthlyNetValue: value });
                   }
                 }}
               />
@@ -409,20 +396,6 @@ function AgreementsTab() {
                     setNewAgreement({ ...newAgreement, taxOperation: e.target.checked });
                   } else if (editForm) {
                     setEditForm({ ...editForm, taxOperation: e.target.checked });
-                  }
-                }}
-              />
-            </label>
-            <label>
-              Opłacono
-              <input
-                type="checkbox"
-                checked={(addMode ? newAgreement.paid : editForm?.paid) || false}
-                onChange={e => {
-                  if (addMode) {
-                    setNewAgreement({ ...newAgreement, paid: e.target.checked });
-                  } else if (editForm) {
-                    setEditForm({ ...editForm, paid: e.target.checked });
                   }
                 }}
               />
