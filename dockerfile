@@ -15,6 +15,11 @@ COPY backend/mvnw .
 COPY backend/mvnw.cmd .
 COPY backend/src ./src
 COPY --from=frontend /app/frontend/dist ./src/main/resources/static
+
+# NADAJ UPRAWNIENIA EXECUTABLE MVNW
+RUN chmod +x mvnw
+
+# Build JAR
 RUN ./mvnw clean package -DskipTests
 
 # Stage 3: Runtime
