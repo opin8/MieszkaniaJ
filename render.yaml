@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: mieszkaniaj-backend
+    env: java
+    plan: free
+    branch: main
+    rootDir: .
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    envVars:
+      SPRING_DATASOURCE_URL: 
+        sync: false  # ręcznie w dashboard
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 
+        sync: false
+      JWT_SECRET: 
+        sync: false
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
