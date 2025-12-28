@@ -28,9 +28,12 @@ interface Apartment {
   houseNumber: number;
 }
 
+type ViewType = 1 | 2 | 3 | 4;
+
 function AnalyticsTab() {
   const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
   const [loading, setLoading] = useState(false);
+  const [viewType, setViewType] = useState<ViewType>(1);
 
   // Filtry
   const [apartmentIds, setApartmentIds] = useState<number[]>([]);
@@ -67,7 +70,6 @@ function AnalyticsTab() {
       const res = await api.get<AnalyticsSummary>("/analytics?" + params.toString());
       setSummary(res.data);
     } catch (err) {
-      console.error("Błąd ładowania analityki", err);
       alert("Błąd ładowania analityki");
     } finally {
       setLoading(false);
@@ -91,6 +93,43 @@ function AnalyticsTab() {
   };
 
   if (loading) return <p className="loading">Ładowanie analityki...</p>;
+
+  // Przygotowanie danych do tabel
+  const getNetAmount = (entry: FinancialEntry) => entry.netAmount / (1 + entry.vatRate / 100);
+
+  // 1. Grupowanie po mieszkaniu i kategorii
+  const groupedByApartmentAndCategory = summary?.allEntries.reduce((acc, e) => {
+    const aptName = e.apartment ? `${e.apartment.street} ${e.apartment.houseNumber}` : "Ogólne";
+    const key = `${aptName}|||${e.category}`;
+    if (!acc[key]) {
+      acc[key] = {
+        apartment: aptName,
+        category: e.category,
+        total: 0,
+      };
+    }
+    acc[key].total += getNetAmount(e);
+    return acc;
+  }, {} as Record<string, { apartment: string; category: string; total: number }>);
+
+  // 2. Suma per mieszkanie
+  const groupedByApartment = summary?.allEntries.reduce((acc, e) => {
+    const aptName = e.apartment ? `${e.apartment.street} ${e.apartment.houseNumber}` : "Ogólne";
+    if (!acc[aptName]) {
+      acc[aptName] = 0;
+    }
+    acc[aptName] += getNetAmount(e);
+    return acc;
+  }, {} as Record<string, number>);
+
+  // 3. Suma per kategoria
+  const groupedByCategory = summary?.allEntries.reduce((acc, e) => {
+    if (!acc[e.category]) {
+      acc[e.category] = 0;
+    }
+    acc[e.category] += getNetAmount(e);
+    return acc;
+  }, {} as Record<string, number>);
 
   return (
     <div className="tab-content">
@@ -205,6 +244,97 @@ function AnalyticsTab() {
             </div>
           </div>
 
+          <div className="view-selector">
+            <h4>Wybierz widok tabeli:</h4>
+            <label>
+              <input type="radio" name="viewType" value={1} checked={viewType === 1} onChange={() => setViewType(1)} />
+              Pokaż wyniki każdego mieszkania, dzieląc je po kategoriach
+            </label>
+            <label>
+              <input type="radio" name="viewType" value={2} checked={viewType === 2} onChange={() => setViewType(2)} />
+              Pokaż wynik każdego mieszkania (sumując wybrane kategorie)
+            </label>
+            <label>
+              <input type="radio" name="viewType" value={3} checked={viewType === 3} onChange={() => setViewType(3)} />
+              Podsumuj wyniki wybranych kategorii (sumując je po mieszkaniach)
+            </label>
+            <label>
+              <input type="radio" name="viewType" value={4} checked={viewType === 4} onChange={() => setViewType(4)} />
+              Pokaż sumę wszystkich mieszkań i kategorii
+            </label>
+          </div>
+
+          {/* Widok 1: Mieszkanie + kategoria */}
+          {viewType === 1 && groupedByApartmentAndCategory && (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Mieszkanie</th>
+                  <th>Kategoria</th>
+                  <th>Suma netto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.values(groupedByApartmentAndCategory).map(row => (
+                  <tr key={`${row.apartment}-${row.category}`}>
+                    <td>{row.apartment}</td>
+                    <td>{row.category}</td>
+                    <td>{row.total.toFixed(2)} zł</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {/* Widok 2: Suma per mieszkanie */}
+          {viewType === 2 && groupedByApartment && (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Mieszkanie</th>
+                  <th>Suma netto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(groupedByApartment).map(([apt, total]) => (
+                  <tr key={apt}>
+                    <td>{apt}</td>
+                    <td>{total.toFixed(2)} zł</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {/* Widok 3: Suma per kategoria */}
+          {viewType === 3 && groupedByCategory && (
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Kategoria</th>
+                  <th>Suma netto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(groupedByCategory).map(([cat, total]) => (
+                  <tr key={cat}>
+                    <td>{cat}</td>
+                    <td>{total.toFixed(2)} zł</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+
+          {/* Widok 4: Ogólna suma */}
+          {viewType === 4 && (
+            <div className="total-summary">
+              <h4>Suma wszystkich mieszkań i kategorii (netto)</h4>
+              <p>{summary.netProfitNet.toFixed(2)} zł</p>
+            </div>
+          )}
+
+          {/* Tabela szczegółowa zawsze na dole */}
           <h3>Rekordy finansowe (brutto)</h3>
           <table className="data-table">
             <thead>

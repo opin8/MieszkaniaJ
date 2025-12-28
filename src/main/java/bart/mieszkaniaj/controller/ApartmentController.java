@@ -1,6 +1,5 @@
 package bart.mieszkaniaj.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -61,11 +60,6 @@ public class ApartmentController {
                     existing.setParkingSpotNumber(apartmentDetails.getParkingSpotNumber());
                     existing.setBalconyTerraceArea(apartmentDetails.getBalconyTerraceArea());
                     existing.setGarageNumber(apartmentDetails.getGarageNumber());
-
-                    // <<< KLUCZOWE – AKTUALIZACJA LIST >>>
-                    existing.setRentPayments(apartmentDetails.getRentPayments() != null ? apartmentDetails.getRentPayments() : new ArrayList<>());
-                    existing.setMeterReadings(apartmentDetails.getMeterReadings() != null ? apartmentDetails.getMeterReadings() : new ArrayList<>());
-                    existing.setExpenses(apartmentDetails.getExpenses() != null ? apartmentDetails.getExpenses() : new ArrayList<>());
 
                     Apartment updated = apartmentService.saveApartment(existing);
                     return ResponseEntity.ok(updated);

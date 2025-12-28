@@ -271,3 +271,56 @@
 .toggle-btn.active {
   background: #4ade80;
 }
+
+.view-selector {
+  margin: 2rem 0;
+  background: #333333;
+  padding: 1.5rem;
+  border-radius: 16px;
+}
+
+.view-selector h4 {
+  margin-bottom: 1rem;
+  color: #00d4ff;
+}
+
+.view-selector label {
+  display: block;
+  margin-bottom: 0.8rem;
+  cursor: pointer;
+}
+
+.total-summary {
+  text-align: center;
+  background: #444444;
+  padding: 2rem;
+  border-radius: 16px;
+  margin: 2rem 0;
+  font-size: 1.6rem;
+}
+
+.pivot-container {
+  overflow-x: auto;
+  margin: 2rem 0;
+}
+
+.pivot-table {
+  min-width: 800px;
+}
+
+.pivot-table th,
+.pivot-table td {
+  text-align: right;
+  padding: 0.8rem;
+}
+
+.pivot-table th:first-child,
+.pivot-table td:first-child {
+  text-align: left;
+  font-weight: bold;
+}
+
+.summary-row td {
+  font-weight: bold;
+  background: #444444 !important;
+}

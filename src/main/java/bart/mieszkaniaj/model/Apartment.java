@@ -46,19 +46,6 @@ public class Apartment {
     @Column(name = "garage_number")
     private String garageNumber;
 
-    // === BRAKUJĄCE LISTY ===
-    @ElementCollection
-    @CollectionTable(name = "rent_payments", joinColumns = @JoinColumn(name = "apartment_id"))
-    private List<RentPayment> rentPayments = new ArrayList<>();
-
-    @ElementCollection
-    @CollectionTable(name = "meter_readings", joinColumns = @JoinColumn(name = "apartment_id"))
-    private List<MeterReading> meterReadings = new ArrayList<>();
-
-    @ElementCollection
-    @CollectionTable(name = "expenses", joinColumns = @JoinColumn(name = "apartment_id"))
-    private List<Expense> expenses = new ArrayList<>();
-
     // Konstruktor pusty
     public Apartment() {}
 
@@ -98,14 +85,4 @@ public class Apartment {
 
     public String getGarageNumber() { return garageNumber; }
     public void setGarageNumber(String garageNumber) { this.garageNumber = garageNumber; }
-
-    // Gettery i settery dla list
-    public List<RentPayment> getRentPayments() { return rentPayments; }
-    public void setRentPayments(List<RentPayment> rentPayments) { this.rentPayments = rentPayments; }
-
-    public List<MeterReading> getMeterReadings() { return meterReadings; }
-    public void setMeterReadings(List<MeterReading> meterReadings) { this.meterReadings = meterReadings; }
-
-    public List<Expense> getExpenses() { return expenses; }
-    public void setExpenses(List<Expense> expenses) { this.expenses = expenses; }
 }
