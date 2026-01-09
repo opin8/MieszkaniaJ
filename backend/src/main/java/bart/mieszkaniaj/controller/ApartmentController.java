@@ -48,7 +48,6 @@ public class ApartmentController {
     public ResponseEntity<Apartment> updateApartment(@PathVariable int id, @RequestBody Apartment apartmentDetails) {
         return apartmentService.getApartmentById(id)
                 .map(existing -> {
-                    // Podstawowe pola
                     existing.setCity(apartmentDetails.getCity());
                     existing.setPostalCode(apartmentDetails.getPostalCode());
                     existing.setStreet(apartmentDetails.getStreet());

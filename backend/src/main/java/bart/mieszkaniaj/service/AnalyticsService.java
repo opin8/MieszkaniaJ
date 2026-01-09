@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AnalyticsService {
@@ -24,58 +25,66 @@ public class AnalyticsService {
     ) {}
 
     public AnalyticsSummary getAnalytics(
-            List<Integer> apartmentIds,
+            List<Integer> apartmentIds,  // <-- tu już było Integer – OK
             List<String> categories,
             LocalDate dateFrom,
             LocalDate dateTo,
             Boolean onlyPaid
     ) {
-        List<FinancialEntry> allEntries = financialEntryRepository.findAll();
+        List<FinancialEntry> entries = financialEntryRepository.findAll();
 
-        // Filtry z bezpiecznymi null checkami
+        System.out.println("Before filters: " + entries.size() + " entries");
+
+        // Filtr po mieszkaniach
         if (apartmentIds != null && !apartmentIds.isEmpty()) {
-            allEntries = allEntries.stream()
+            entries = entries.stream()
                     .filter(e -> e.getApartment() != null && apartmentIds.contains(e.getApartment().getId()))
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
+        // Filtr po kategoriach
         if (categories != null && !categories.isEmpty()) {
-            allEntries = allEntries.stream()
+            System.out.println("Filtering by categories: " + categories);
+            entries = entries.stream()
                     .filter(e -> categories.contains(e.getCategory()))
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
+        // Filtr po dacie
         if (dateFrom != null) {
-            allEntries = allEntries.stream()
+            entries = entries.stream()
                     .filter(e -> e.getDate() != null && !e.getDate().isBefore(dateFrom))
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
         if (dateTo != null) {
-            allEntries = allEntries.stream()
+            entries = entries.stream()
                     .filter(e -> e.getDate() != null && !e.getDate().isAfter(dateTo))
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
-        if (onlyPaid != null) {
-            allEntries = allEntries.stream()
-                    .filter(e -> e.isPaid() == onlyPaid)
-                    .toList();
+        // Filtr opłacone
+        if (onlyPaid != null && onlyPaid) {
+            entries = entries.stream()
+                    .filter(FinancialEntry::isPaid)
+                    .collect(Collectors.toList());
         }
+
+        System.out.println("After filters: " + entries.size() + " entries");
 
         // Obliczenia netto
-        double totalExpensesNet = allEntries.stream()
+        double totalExpensesNet = entries.stream()
                 .filter(e -> e.getNetAmount() < 0)
                 .mapToDouble(e -> e.getNetAmount() / (1 + e.getVatRate() / 100))
                 .sum();
 
-        double totalIncomeNet = allEntries.stream()
+        double totalIncomeNet = entries.stream()
                 .filter(e -> e.getNetAmount() > 0)
                 .mapToDouble(e -> e.getNetAmount() / (1 + e.getVatRate() / 100))
                 .sum();
 
         double netProfitNet = totalIncomeNet + totalExpensesNet;
 
-        return new AnalyticsSummary(totalExpensesNet, totalIncomeNet, netProfitNet, allEntries);
+        return new AnalyticsSummary(totalExpensesNet, totalIncomeNet, netProfitNet, entries);
     }
 }

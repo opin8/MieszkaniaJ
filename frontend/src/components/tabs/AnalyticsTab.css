@@ -12,7 +12,10 @@
   color: #00d4ff;
 }
 
-/* Filtry */
+/* ──────────────────────────────────────────────── */
+/*                  FILTRY                          */
+/* ──────────────────────────────────────────────── */
+
 .analytics-filters {
   background: #333333;
   padding: 2rem;
@@ -28,7 +31,6 @@
   margin-bottom: 2rem;
 }
 
-/* Grupa filtrów z przyciskiem po prawej */
 .filter-group {
   display: flex;
   flex-direction: column;
@@ -49,14 +51,20 @@
   padding: 0.5rem 1rem;
   border-radius: 50px;
   font-size: 0.9rem;
+  border: none;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn:hover {
+  opacity: 0.9;
 }
 
 .toggle-btn.active {
   background: #4ade80;
 }
 
-/* Lista wyboru (mieszkania/kategorie) – bez kwadratu tick, całe pole klikalne */
+/* Lista wyboru – całe pole klikalne, bez domyślnego checkboxa */
 .multi-select {
   display: flex;
   flex-direction: column;
@@ -74,7 +82,7 @@
   padding: 0.6rem;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.25s;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -85,25 +93,21 @@
 }
 
 .multi-select input[type="checkbox"] {
-  display: none; /* ukryty kwadrat tick */
+  display: none;
 }
 
-.multi-select input[type="checkbox"] + span {
-  flex: 1;
-}
-
-.multi-select input[type="checkbox"]:checked + span {
-  background: #4ade80;
+.multi-select label.selected {
+  background: #4ade80 !important;
   color: white;
-  border-radius: 8px;
-  padding: 0.6rem;
+  font-weight: 600;
 }
 
-/* Przełącznik "Tylko opłacone" – bez kwadratu tick */
+/* Przełącznik "Tylko opłacone" */
 .paid-toggle {
   display: flex;
   align-items: center;
   gap: 1rem;
+  color: #cccccc;
 }
 
 .paid-toggle input[type="checkbox"] {
@@ -111,7 +115,6 @@
 }
 
 .toggle-switch {
-  display: inline-block;
   width: 60px;
   height: 30px;
   background: #666666;
@@ -134,7 +137,7 @@
   border-radius: 50%;
   top: 2px;
   left: 2px;
-  transition: left 0.3s;
+  transition: left 0.3s ease;
 }
 
 .toggle-switch.active::after {
@@ -144,19 +147,40 @@
 .load-btn {
   background: #00d4ff;
   color: white;
-  padding: 1rem 2rem;
+  padding: 1rem 2.5rem;
   font-size: 1.2rem;
+  border: none;
   border-radius: 50px;
-  margin: 1rem auto;
+  margin: 1.5rem auto 0;
   display: block;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-/* Podsumowanie */
+.load-btn:hover:not(:disabled) {
+  background: #00b8e0;
+}
+
+.load-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ──────────────────────────────────────────────── */
+/*               WYNIKI / PODSUMOWANIE              */
+/* ──────────────────────────────────────────────── */
+
 .analytics-results {
   background: #333333;
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+
+  /* Najważniejsza zmiana – stabilizuje szerokość od początku */
+  min-width: 960px;           /* ← dopasuj do swoich potrzeb (800–1200px) */
+  width: 100%;
+  max-width: 1400px;          /* górna granica na bardzo dużych ekranach */
+  margin: 0 auto;
 }
 
 .summary-cards {
@@ -169,10 +193,12 @@
 
 .card {
   background: #444444;
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   border-radius: 16px;
   text-align: center;
-  min-width: 200px;
+  min-width: 220px;
+  flex: 1 1 220px;
+  max-width: 320px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
@@ -181,146 +207,80 @@
   color: #00d4ff;
 }
 
-.card.profit.positive p {
-  color: #4ade80; /* zielony dla dodatniego */
-}
-
-.card.profit.negative p {
-  color: #ef4444; /* czerwony dla ujemnego */
-}
-
-.card.profit p {
+.card p {
   font-size: 1.8rem;
   font-weight: bold;
 }
 
-.card.profit p {
+.card.profit.positive p {
   color: #4ade80;
 }
 
-/* Tabele */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 2rem;
-  background: #444444;
+.card.profit.negative p {
+  color: #ef4444;
 }
 
-.data-table th,
-.data-table td {
-  border: 1px solid #555555;
-  padding: 1rem;
-  text-align: left;
-}
-
-.data-table th {
-  background: #555555;
-  color: #00d4ff;
-}
-
-.loading {
-  text-align: center;
-  font-size: 2rem;
-  padding: 4rem;
-  color: #cccccc;
-}
-
-/* Multi-select – zaznaczone elementy widoczne */
-.multi-select label {
-  display: flex;
-  align-items: center;
-  padding: 0.6rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.multi-select input[type="checkbox"] {
-  display: none; /* ukryty kwadrat */
-}
-
-.multi-select label.selected {
-  background: #4ade80 !important;
-  color: white;
-  font-weight: bold;
-}
-
-.multi-select label:hover {
-  background: #555555;
-}
-
-/* Przycisk "Zaznacz wszystkie" po prawej */
-.filter-group label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.toggle-btn {
-  background: #666666;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.toggle-btn.active {
-  background: #4ade80;
-}
-
+/* Widok wyboru typu tabeli */
 .view-selector {
   margin: 2rem 0;
-  background: #333333;
+  background: #2a2a2a;
   padding: 1.5rem;
   border-radius: 16px;
 }
 
 .view-selector h4 {
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
   color: #00d4ff;
 }
 
 .view-selector label {
   display: block;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.9rem;
   cursor: pointer;
+  color: #dddddd;
 }
 
-.total-summary {
-  text-align: center;
-  background: #444444;
-  padding: 2rem;
-  border-radius: 16px;
-  margin: 2rem 0;
-  font-size: 1.6rem;
-}
-
-.pivot-container {
+/* Tabela pivot */
+.monthly-pivot-container {
   overflow-x: auto;
   margin: 2rem 0;
+  border-radius: 12px;
 }
 
-.pivot-table {
-  min-width: 800px;
+.data-table {
+  width: 100%;
+  min-width: 900px;           /* ← pomaga przy bardzo wąskich ekranach */
+  border-collapse: collapse;
+  background: #444444;
+  table-layout: auto;
 }
 
-.pivot-table th,
-.pivot-table td {
+.data-table th,
+.data-table td {
+  border: 1px solid #555555;
+  padding: 1rem 1.2rem;
   text-align: right;
-  padding: 0.8rem;
 }
 
-.pivot-table th:first-child,
-.pivot-table td:first-child {
+.data-table th:first-child,
+.data-table td:first-child {
   text-align: left;
-  font-weight: bold;
+  font-weight: 600;
+  min-width: 240px;
 }
 
-.summary-row td {
-  font-weight: bold;
-  background: #444444 !important;
+.data-table th {
+  background: #555555;
+  color: #00d4ff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  font-size: 2.2rem;
+  padding: 6rem 1rem;
+  color: #888888;
 }

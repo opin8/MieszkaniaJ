@@ -1,14 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../../api";
-import { formatDate } from "../../utils/dateUtils";
 import "./AnalyticsTab.css";
-
-interface AnalyticsSummary {
-  totalExpensesNet: number;
-  totalIncomeNet: number;
-  netProfitNet: number;
-  allEntries: FinancialEntry[];
-}
 
 interface FinancialEntry {
   id: number;
@@ -31,11 +23,16 @@ interface Apartment {
 type ViewType = 1 | 2 | 3 | 4;
 
 function AnalyticsTab() {
-  const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
+  const [summary, setSummary] = useState<{
+    totalExpensesNet: number;
+    totalIncomeNet: number;
+    netProfitNet: number;
+    allEntries: FinancialEntry[];
+  } | null>(null);
+
   const [loading, setLoading] = useState(false);
   const [viewType, setViewType] = useState<ViewType>(1);
 
-  // Filtry
   const [apartmentIds, setApartmentIds] = useState<number[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [dateFrom, setDateFrom] = useState<string>("");
@@ -45,7 +42,10 @@ function AnalyticsTab() {
   const [apartments, setApartments] = useState<Apartment[]>([]);
 
   const expenseCategories = [
-    "Czynsz administracyjny",
+    "Czynsz",
+    "Woda i CO",
+    "Kaucja",
+    "Internet",
     "Prąd",
     "Remont/naprawa",
     "Podatek",
@@ -67,7 +67,12 @@ function AnalyticsTab() {
       if (dateTo) params.append("dateTo", dateTo);
       if (onlyPaid !== null) params.append("onlyPaid", onlyPaid.toString());
 
-      const res = await api.get<AnalyticsSummary>("/analytics?" + params.toString());
+      const res = await api.get<{
+        totalExpensesNet: number;
+        totalIncomeNet: number;
+        netProfitNet: number;
+        allEntries: FinancialEntry[];
+      }>("/analytics?" + params.toString());
       setSummary(res.data);
     } catch (err) {
       alert("Błąd ładowania analityki");
@@ -94,42 +99,70 @@ function AnalyticsTab() {
 
   if (loading) return <p className="loading">Ładowanie analityki...</p>;
 
-  // Przygotowanie danych do tabel
   const getNetAmount = (entry: FinancialEntry) => entry.netAmount / (1 + entry.vatRate / 100);
 
-  // 1. Grupowanie po mieszkaniu i kategorii
-  const groupedByApartmentAndCategory = summary?.allEntries.reduce((acc, e) => {
-    const aptName = e.apartment ? `${e.apartment.street} ${e.apartment.houseNumber}` : "Ogólne";
-    const key = `${aptName}|||${e.category}`;
-    if (!acc[key]) {
-      acc[key] = {
-        apartment: aptName,
-        category: e.category,
-        total: 0,
-      };
+  const getMonthsInRange = () => {
+    if (!dateFrom || !dateTo) return [];
+    const start = new Date(dateFrom);
+    const end = new Date(dateTo);
+    const months = [];
+    let current = new Date(start.getFullYear(), start.getMonth(), 1);
+    while (current <= end) {
+      const monthStr = `${String(current.getMonth() + 1).padStart(2, "0")}.${current.getFullYear()}`;
+      months.push(monthStr);
+      current.setMonth(current.getMonth() + 1);
     }
-    acc[key].total += getNetAmount(e);
-    return acc;
-  }, {} as Record<string, { apartment: string; category: string; total: number }>);
+    return months;
+  };
 
-  // 2. Suma per mieszkanie
-  const groupedByApartment = summary?.allEntries.reduce((acc, e) => {
-    const aptName = e.apartment ? `${e.apartment.street} ${e.apartment.houseNumber}` : "Ogólne";
-    if (!acc[aptName]) {
-      acc[aptName] = 0;
-    }
-    acc[aptName] += getNetAmount(e);
-    return acc;
-  }, {} as Record<string, number>);
+  const months = getMonthsInRange();
 
-  // 3. Suma per kategoria
-  const groupedByCategory = summary?.allEntries.reduce((acc, e) => {
-    if (!acc[e.category]) {
-      acc[e.category] = 0;
-    }
-    acc[e.category] += getNetAmount(e);
-    return acc;
-  }, {} as Record<string, number>);
+  const getPivotData = () => {
+    if (!summary || months.length === 0) return null;
+
+    const entries = summary.allEntries;
+    const data: Record<string, Record<string, number>> = {};
+
+    entries.forEach(e => {
+      const date = new Date(e.date);
+      const monthStr = `${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+
+      if (!months.includes(monthStr)) return;
+
+      const aptName = e.apartment ? `${e.apartment.street} ${e.apartment.houseNumber}` : "Ogólne";
+      const net = getNetAmount(e);
+
+      let key = '';
+
+      if (viewType === 1) {
+        key = `${aptName} - ${e.category}`;
+      } else if (viewType === 2) {
+        key = `${aptName} - suma wybranych kategorii`;
+      } else if (viewType === 3) {
+        key = `${e.category} - suma dla wybranych mieszkań`;
+      } else if (viewType === 4) {
+        key = `${aptName} - zsumowane wydatki mieszkania`;
+      }
+
+      if (!data[key]) {
+        data[key] = {};
+        months.forEach(m => data[key][m] = 0);
+      }
+
+      data[key][monthStr] += net;
+    });
+
+    // Remove rows with all zeros
+    Object.keys(data).forEach(key => {
+      if (Object.values(data[key]).every(value => value === 0)) {
+        delete data[key];
+      }
+    });
+
+    return { data };
+  };
+
+  const pivotData = getPivotData();
 
   return (
     <div className="tab-content">
@@ -264,108 +297,41 @@ function AnalyticsTab() {
             </label>
           </div>
 
-          {/* Widok 1: Mieszkanie + kategoria */}
-          {viewType === 1 && groupedByApartmentAndCategory && (
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Mieszkanie</th>
-                  <th>Kategoria</th>
-                  <th>Suma netto</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.values(groupedByApartmentAndCategory).map(row => (
-                  <tr key={`${row.apartment}-${row.category}`}>
-                    <td>{row.apartment}</td>
-                    <td>{row.category}</td>
-                    <td>{row.total.toFixed(2)} zł</td>
+          {pivotData && months.length > 0 && (
+            <div className="monthly-pivot-container">
+              <table className="data-table monthly-pivot">
+                <thead>
+                  <tr>
+                    <th>
+                      {viewType === 1 ? "Adres mieszkania - Kategoria wydatku" :
+                       viewType === 2 ? "Adres mieszkania - suma wybranych kategorii" :
+                       viewType === 3 ? "Kategoria płatności - suma dla wybranych mieszkań" :
+                       "Adres mieszkania - zsumowane wydatki mieszkania"}
+                    </th>
+                    {months.map(month => (
+                      <th key={month}>{month}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-
-          {/* Widok 2: Suma per mieszkanie */}
-          {viewType === 2 && groupedByApartment && (
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Mieszkanie</th>
-                  <th>Suma netto</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(groupedByApartment).map(([apt, total]) => (
-                  <tr key={apt}>
-                    <td>{apt}</td>
-                    <td>{total.toFixed(2)} zł</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-
-          {/* Widok 3: Suma per kategoria */}
-          {viewType === 3 && groupedByCategory && (
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Kategoria</th>
-                  <th>Suma netto</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(groupedByCategory).map(([cat, total]) => (
-                  <tr key={cat}>
-                    <td>{cat}</td>
-                    <td>{total.toFixed(2)} zł</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-
-          {/* Widok 4: Ogólna suma */}
-          {viewType === 4 && (
-            <div className="total-summary">
-              <h4>Suma wszystkich mieszkań i kategorii (netto)</h4>
-              <p>{summary.netProfitNet.toFixed(2)} zł</p>
+                </thead>
+                <tbody>
+                  {Object.entries(pivotData.data).map(([key, monthValues]) => (
+                    <tr key={key}>
+                      <td>{key}</td>
+                      {months.map(month => (
+                        <td key={month} style={{ textAlign: "right", color: (monthValues[month] || 0) < 0 ? "red" : "inherit" }}>
+                          {(monthValues[month] || 0).toFixed(2)} zł
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
 
-          {/* Tabela szczegółowa zawsze na dole */}
-          <h3>Rekordy finansowe (brutto)</h3>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Mieszkanie</th>
-                <th>Kategoria</th>
-                <th>Data</th>
-                <th>Kwota brutto</th>
-                <th>VAT</th>
-                <th>Opis</th>
-                <th>Podatek</th>
-                <th>Opłacono</th>
-              </tr>
-            </thead>
-            <tbody>
-              {summary.allEntries.map(e => (
-                <tr key={e.id}>
-                  <td>{e.apartment ? `${e.apartment.street} ${e.apartment.houseNumber}` : "—"}</td>
-                  <td>{e.category}</td>
-                  <td>{formatDate(e.date)}</td>
-                  <td>{e.netAmount.toFixed(2)} zł</td>
-                  <td>{e.vatRate.toFixed(2)}%</td>
-                  <td>{e.description || "—"}</td>
-                  <td>{e.taxOperation ? "Tak" : "Nie"}</td>
-                  <td className={e.paid ? "paid-yes" : "paid-no"}>
-                    {e.paid ? "Tak" : "Nie"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {months.length === 0 && summary && (
+            <p style={{ color: "orange" }}>Wybierz zakres dat (od-do), aby zobaczyć tabelę miesięczną.</p>
+          )}
         </div>
       )}
     </div>
