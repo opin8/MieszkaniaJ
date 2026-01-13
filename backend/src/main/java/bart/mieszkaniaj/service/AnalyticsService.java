@@ -25,7 +25,7 @@ public class AnalyticsService {
     ) {}
 
     public AnalyticsSummary getAnalytics(
-            List<Integer> apartmentIds,  // <-- tu już było Integer – OK
+            List<Integer> apartmentIds,
             List<String> categories,
             LocalDate dateFrom,
             LocalDate dateTo,
@@ -33,24 +33,18 @@ public class AnalyticsService {
     ) {
         List<FinancialEntry> entries = financialEntryRepository.findAll();
 
-        System.out.println("Before filters: " + entries.size() + " entries");
-
-        // Filtr po mieszkaniach
         if (apartmentIds != null && !apartmentIds.isEmpty()) {
             entries = entries.stream()
                     .filter(e -> e.getApartment() != null && apartmentIds.contains(e.getApartment().getId()))
                     .collect(Collectors.toList());
         }
 
-        // Filtr po kategoriach
         if (categories != null && !categories.isEmpty()) {
-            System.out.println("Filtering by categories: " + categories);
             entries = entries.stream()
                     .filter(e -> categories.contains(e.getCategory()))
                     .collect(Collectors.toList());
         }
 
-        // Filtr po dacie
         if (dateFrom != null) {
             entries = entries.stream()
                     .filter(e -> e.getDate() != null && !e.getDate().isBefore(dateFrom))
@@ -63,7 +57,6 @@ public class AnalyticsService {
                     .collect(Collectors.toList());
         }
 
-        // Filtr opłacone
         if (onlyPaid != null && onlyPaid) {
             entries = entries.stream()
                     .filter(FinancialEntry::isPaid)
@@ -72,7 +65,6 @@ public class AnalyticsService {
 
         System.out.println("After filters: " + entries.size() + " entries");
 
-        // Obliczenia netto
         double totalExpensesNet = entries.stream()
                 .filter(e -> e.getNetAmount() < 0)
                 .mapToDouble(e -> e.getNetAmount() / (1 + e.getVatRate() / 100))
@@ -82,9 +74,7 @@ public class AnalyticsService {
                 .filter(e -> e.getNetAmount() > 0)
                 .mapToDouble(e -> e.getNetAmount() / (1 + e.getVatRate() / 100))
                 .sum();
-
         double netProfitNet = totalIncomeNet + totalExpensesNet;
-
         return new AnalyticsSummary(totalExpensesNet, totalIncomeNet, netProfitNet, entries);
     }
 }

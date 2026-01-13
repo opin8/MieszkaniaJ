@@ -13,7 +13,6 @@ interface Agreement {
   monthlyNetValue: number;
   vatRate: number;
   description?: string | null;
-  taxOperation: boolean;
 }
 
 interface Contractor {
@@ -43,7 +42,6 @@ function AgreementsTab() {
     monthlyNetValue: 0,
     vatRate: 0,
     description: null,
-    taxOperation: false,
   });
 
   // Filtry
@@ -117,7 +115,6 @@ function AgreementsTab() {
         monthlyNetValue: 0,
         vatRate: 0,
         description: null,
-        taxOperation: false,
       });
     } catch (err) {
       alert("Błąd dodawania umowy");
@@ -148,7 +145,6 @@ function AgreementsTab() {
         monthlyNetValue: 0,
         vatRate: 0,
         description: null,
-        taxOperation: false,
       });
     } else {
       setEditForm(selectedAgreement ? { ...selectedAgreement } : null);
@@ -220,7 +216,6 @@ function AgreementsTab() {
             <th>Kwota miesięczna</th>
             <th>Stawka VAT</th>
             <th>Opis</th>
-            <th>Operacja podatkowa</th>
           </tr>
         </thead>
         <tbody>
@@ -234,7 +229,6 @@ function AgreementsTab() {
               <td>{u.monthlyNetValue.toFixed(2)} zł</td>
               <td>{u.vatRate.toFixed(2)}%</td>
               <td>{u.description || "—"}</td>
-              <td>{u.taxOperation ? "Tak" : "Nie"}</td>
             </tr>
           ))}
         </tbody>
@@ -382,20 +376,6 @@ function AgreementsTab() {
                     setNewAgreement({ ...newAgreement, description: e.target.value || null });
                   } else if (editForm) {
                     setEditForm({ ...editForm, description: e.target.value || null });
-                  }
-                }}
-              />
-            </label>
-            <label>
-              Operacja podatkowa
-              <input
-                type="checkbox"
-                checked={(addMode ? newAgreement.taxOperation : editForm?.taxOperation) || false}
-                onChange={e => {
-                  if (addMode) {
-                    setNewAgreement({ ...newAgreement, taxOperation: e.target.checked });
-                  } else if (editForm) {
-                    setEditForm({ ...editForm, taxOperation: e.target.checked });
                   }
                 }}
               />

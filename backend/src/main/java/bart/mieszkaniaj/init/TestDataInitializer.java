@@ -120,7 +120,6 @@ public class TestDataInitializer {
             agr.setMonthlyNetValue(kwota);
             agr.setVatRate(kat.equals("Czynsz") || kat.equals("Kaucja") ? 23.0 : 8.0);
             agr.setDescription("Testowa umowa " + kat + " – a" + (i + 6) + " (" + start.getYear() + ")");
-            agr.setTaxOperation(true);
 
             agreementRepository.save(agr);
 

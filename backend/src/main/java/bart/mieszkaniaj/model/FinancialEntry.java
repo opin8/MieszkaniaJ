@@ -30,9 +30,6 @@ public class FinancialEntry {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "tax_operation", nullable = false)
-    private boolean taxOperation; // Czy operacja podatkowa
-
     @Column(name = "paid", nullable = false)
     private boolean paid; // Opłacono
 
@@ -60,9 +57,6 @@ public class FinancialEntry {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
-
-    public boolean isTaxOperation() { return taxOperation; }
-    public void setTaxOperation(boolean taxOperation) { this.taxOperation = taxOperation; }
 
     public boolean isPaid() { return paid; }
     public void setPaid(boolean paid) { this.paid = paid; }

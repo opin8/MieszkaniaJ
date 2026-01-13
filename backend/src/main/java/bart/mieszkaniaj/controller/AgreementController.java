@@ -46,7 +46,6 @@ public class AgreementController {
         existing.setMonthlyNetValue(agreementDetails.getMonthlyNetValue());
         existing.setVatRate(agreementDetails.getVatRate());
         existing.setDescription(agreementDetails.getDescription());
-        existing.setTaxOperation(agreementDetails.isTaxOperation());
 
         Agreement updated = agreementService.saveAgreement(existing);
         return ResponseEntity.ok(updated);

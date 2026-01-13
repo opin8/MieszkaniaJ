@@ -29,7 +29,7 @@ public class Agreement {
     private LocalDate dateTo;
 
     @Column(name = "monthly_net_value", nullable = false)
-    private double monthlyNetValue; // Kwota miesięczna (brutto)
+    private double monthlyNetValue;
 
     @Column(name = "vat_rate", nullable = false)
     private double vatRate;
@@ -37,13 +37,8 @@ public class Agreement {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "tax_operation", nullable = false)
-    private boolean taxOperation;
-
-    // Konstruktor pusty
     public Agreement() {}
 
-    // Gettery i settery
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -71,6 +66,4 @@ public class Agreement {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public boolean isTaxOperation() { return taxOperation; }
-    public void setTaxOperation(boolean taxOperation) { this.taxOperation = taxOperation; }
 }

@@ -45,7 +45,6 @@ public class FinancialEntryController {
                     existing.setNetAmount(entryDetails.getNetAmount());
                     existing.setVatRate(entryDetails.getVatRate());
                     existing.setDescription(entryDetails.getDescription());
-                    existing.setTaxOperation(entryDetails.isTaxOperation());
                     existing.setPaid(entryDetails.isPaid());
 
                     FinancialEntry updated = financialEntryService.saveFinancialEntry(existing);

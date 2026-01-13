@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../api";
+import { login } from "../api"; // lub odpowiednia ścieżka
 import "./LoginForm.css";
 
 function LoginForm() {
@@ -10,6 +10,15 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Pokazujemy komunikat po przekierowaniu z powodu wygaśnięcia sesji
+  useEffect(() => {
+    const message = localStorage.getItem("auth_message");
+    if (message) {
+      setError(message);
+      localStorage.removeItem("auth_message");
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -17,9 +26,14 @@ function LoginForm() {
 
     try {
       await login({ username, password });
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Niepoprawne dane logowania");
+      navigate("/dashboard", { replace: true });
+    } catch (err: any) {
+      const message =
+        err.response?.data?.message ||
+        err.response?.status === 401
+          ? "Nieprawidłowa nazwa użytkownika lub hasło"
+          : "Błąd połączenia z serwerem. Spróbuj ponownie.";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -36,9 +50,10 @@ function LoginForm() {
             type="text"
             placeholder="Nazwa użytkownika"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.trim())}
             required
             disabled={loading}
+            autoFocus
           />
           <input
             type="password"
@@ -55,12 +70,6 @@ function LoginForm() {
 
           {error && <p className="error-message">{error}</p>}
         </form>
-
-        <div className="demo-credentials">
-          <p>Dane testowe:</p>
-          <p><strong>admin</strong> / admin123</p>
-          <p><strong>user1</strong> / haslo123</p>
-        </div>
       </div>
     </div>
   );

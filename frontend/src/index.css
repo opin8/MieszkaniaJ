@@ -16,29 +16,22 @@
 /* Globalne zmniejszenie czcionki – wszystko mniejsze i więcej miejsca */
 html, body {
   font-size: 13px !important; /* baza mniejsza niż standardowe 16px */
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-h1 {
-  font-size: 2.4rem !important;
-}
-
-h2 {
-  font-size: 2rem !important;
-}
-
-h3 {
-  font-size: 1.6rem !important;
-}
-
-h4 {
-  font-size: 1.4rem !important;
-}
+h1 { font-size: 2.4rem !important; }
+h2 { font-size: 2.0rem !important; }
+h3 { font-size: 1.6rem !important; }
+h4 { font-size: 1.4rem !important; }
 
 /* Tabele – mniejsze czcionki i padding */
 .data-table th,
 .data-table td {
   font-size: 0.9rem !important;
-  padding: 0.6rem 0.4rem !important;
+  padding: 0.6rem 0.5rem !important;
 }
 
 .data-table th {
@@ -80,44 +73,36 @@ button,
   font-size: 1.6rem !important;
 }
 
+/* Tło z gradientami */
 body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
   background: #1e1e1e;
   color: #ffffff;
   position: relative;
 }
 
-/* Tło z gradientami (z wcześniejszych zmian) */
 body::before {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   pointer-events: none;
   background:
     radial-gradient(circle at 25% 75%, #3a3a3a 0%, transparent 45%),
     radial-gradient(circle at 75% 25%, #3a3a3a 0%, transparent 45%),
     #1e1e1e;
-  z-index: -1;
+  z-index: -2;
 }
 
 body::after {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   pointer-events: none;
   background: radial-gradient(circle at 50% 50%, #2a2a2a 0%, transparent 60%);
   z-index: -1;
   opacity: 0.7;
 }
 
+/* Linki */
 a {
   font-weight: 500;
   color: #00d4ff;
@@ -128,63 +113,130 @@ a:hover {
   color: #00aacc;
 }
 
+/* Przyciski ogólne */
 button {
   border-radius: 50px;
   border: none;
   font-weight: bold;
   font-family: inherit;
-  background-color: #ff0000;
-  color: white;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
 }
 
 button:hover {
-  background-color: #cc0000;
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+  transform: translateY(-2px);
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto #00d4ff;
+/* Globalne poprawki */
+* {
+  box-sizing: border-box;
 }
 
-input, select {
+/* ──────────────────────────────────────────────── */
+/*               NAGŁÓWEK + ZAKŁADKI                */
+/* ──────────────────────────────────────────────── */
+
+.dashboard-header {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.tabs-nav {
+  display: flex;
+  justify-content: center;          /* ← WYŚRODKOWANIE przycisków zakładek */
+  flex-wrap: wrap;
+  gap: 0.8rem 1.4rem;               /* ładniejsze odstępy */
+  flex: 1;                          /* zajmuje dostępne miejsce */
+  max-width: 1000px;                /* ogranicza zbyt duże rozciągnięcie */
+}
+
+.tab {
+  background: #333333;
+  color: #cccccc;
+  padding: 0.7rem 1.4rem;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  background: #444444;
+  color: #ffffff;
+}
+
+.tab-active {
+  background: #00d4ff;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 212, 255, 0.35);
+}
+
+.logout-btn {
+  background: #ef4444;
+  color: white;
+  padding: 0.7rem 1.6rem;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+
+.logout-btn:hover {
+  background: #d32f2f;
+  transform: translateY(-2px);
+}
+
+/* ──────────────────────────────────────────────── */
+/*               POZOSTAŁE GLOBALNE                 */
+/* ──────────────────────────────────────────────── */
+
+.tab-content {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.tab-header {
+  padding: 0 1rem;
+  margin-bottom: 1.5rem;
+}
+
+input,
+select {
   border-radius: 12px;
   border: none;
   background-color: #333333;
   color: white;
+  padding: 0.7rem;
 }
 
 input::placeholder {
   color: #aaaaaa;
 }
 
-/* Globalne poprawki – wszystko mieści się w ekranie */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  padding: 0 2rem; /* odstęp po bokach strony */
-  overflow-x: hidden; /* brak przewijania w prawo */
-}
-
-.tab-content {
-  padding: 1rem 0; /* mniej paddingu bocznego w tab-content */
-  overflow-x: hidden;
-}
-
-/* Nagłówek – przyciski nie wystają */
-.tab-header {
-  padding: 0 1rem;
-}
-
 /* Tabele – scroll wewnętrzny jeśli za szeroka */
-.data-table {
-  display: block;
+.data-table-wrapper {
   overflow-x: auto;
-  white-space: nowrap;
+  margin: 1.5rem 0;
+  border-radius: 12px;
+}
+
+.data-table {
+  min-width: 920px;
+  width: 100%;
 }

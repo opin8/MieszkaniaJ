@@ -30,17 +30,8 @@ public class AnalyticsController {
             @RequestParam(value = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
             @RequestParam(value = "onlyPaid", defaultValue = "false") boolean onlyPaid) {
 
-        // Bezpieczne domyślne listy
         List<Integer> safeApartmentIds = apartmentIds != null ? apartmentIds : new ArrayList<>();
         List<String> safeCategories = categories != null ? categories : new ArrayList<>();
-
-        // Logowanie – sprawdź w docker logs
-        System.out.println("=== Analytics request received ===");
-        System.out.println("apartmentIds: " + safeApartmentIds);
-        System.out.println("categories (count: " + safeCategories.size() + "): " + safeCategories);
-        System.out.println("dateFrom: " + dateFrom);
-        System.out.println("dateTo: " + dateTo);
-        System.out.println("onlyPaid: " + onlyPaid);
 
         return analyticsService.getAnalytics(safeApartmentIds, safeCategories, dateFrom, dateTo, onlyPaid);
     }

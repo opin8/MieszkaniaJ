@@ -32,10 +32,6 @@ function Dashboard() {
         return <FinancialTab />;
       case "analityka":
         return <AnalyticsTab />;
-      case "wydarzenia":
-        return <div className="tab-content"><h2>Baza wydarzeń</h2><p>Tu będzie tabela wydarzeń</p></div>;
-      default:
-        return null;
     }
   };
 
@@ -73,14 +69,7 @@ function Dashboard() {
           >
             Analityka
           </button>
-          <button
-            className={activeTab === "wydarzenia" ? "tab-active" : "tab"}
-            onClick={() => setActiveTab("wydarzenia")}
-          >
-            Baza wydarzeń
-          </button>
         </nav>
-
         <button onClick={handleLogout} className="logout-btn">
           Wyloguj się
         </button>

@@ -52,7 +52,6 @@ public class FinancialEntryService {
                 .toList();
 
         for (Agreement agreement : activeAgreements) {
-            // Sprawdzamy, czy rekord na ten miesiąc już istnieje
             boolean exists = financialEntryRepository.findAll().stream()
                     .anyMatch(e -> e.getApartment() != null && e.getApartment().getId() == agreement.getApartment().getId()
                             && e.getCategory().equals(agreement.getCategory())
@@ -63,11 +62,10 @@ public class FinancialEntryService {
                 entry.setApartment(agreement.getApartment());
                 entry.setCategory(agreement.getCategory());
                 entry.setDate(firstOfMonth);
-                entry.setNetAmount(agreement.getMonthlyNetValue()); // brutto z umowy
+                entry.setNetAmount(agreement.getMonthlyNetValue());
                 entry.setVatRate(agreement.getVatRate());
                 entry.setDescription("Automatycznie z umowy #" + agreement.getId());
-                entry.setTaxOperation(agreement.isTaxOperation());
-                entry.setPaid(false); // domyślnie nieopłacone
+                entry.setPaid(false);
                 financialEntryRepository.save(entry);
             }
         }
@@ -92,7 +90,6 @@ public class FinancialEntryService {
             f1.setNetAmount(-800.00);
             f1.setVatRate(8.00);
             f1.setDescription("Opłata za styczeń");
-            f1.setTaxOperation(true);
             f1.setPaid(true);
             financialEntryRepository.save(f1);
 
@@ -103,7 +100,6 @@ public class FinancialEntryService {
             f2.setNetAmount(-450.00);
             f2.setVatRate(23.00);
             f2.setDescription("Rozliczenie energii");
-            f2.setTaxOperation(false);
             f2.setPaid(true);
             financialEntryRepository.save(f2);
 
@@ -114,7 +110,6 @@ public class FinancialEntryService {
             f3.setNetAmount(-2000.00);
             f3.setVatRate(23.00);
             f3.setDescription("Malowanie klatki");
-            f3.setTaxOperation(true);
             f3.setPaid(false);
             financialEntryRepository.save(f3);
 
@@ -125,7 +120,6 @@ public class FinancialEntryService {
             f4.setNetAmount(-1200.00);
             f4.setVatRate(0.00);
             f4.setDescription("Podatek od nieruchomości");
-            f4.setTaxOperation(false);
             f4.setPaid(true);
             financialEntryRepository.save(f4);
 
@@ -136,7 +130,6 @@ public class FinancialEntryService {
             f5.setNetAmount(-600.00);
             f5.setVatRate(0.00);
             f5.setDescription("Ubezpieczenie mieszkania");
-            f5.setTaxOperation(false);
             f5.setPaid(true);
             financialEntryRepository.save(f5);
 

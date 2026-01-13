@@ -1,24 +1,33 @@
 .dashboard {
   min-height: 100vh;
-  padding: 1.5rem; /* mniejszy padding */
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;           /* zamiast center – ważne dla wyrównania */
+}
+
+.dashboard-main {
+  width: 100%;
+  max-width: 1440px;              /* główna wartość kontrolująca maksymalną szerokość */
+  margin: 0 auto;
+  flex: 1;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .dashboard-header {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1440px;              /* wyrównane z dashboard-main */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem; /* zmniejszone */
+  margin-bottom: 2rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
 
 .dashboard-header h1 {
-  font-size: 2.2rem; /* było 2.8rem */
+  font-size: 2.2rem;
   margin: 0;
 }
 
@@ -28,94 +37,47 @@
   flex-wrap: wrap;
 }
 
-.add-btn, .logout-btn {
-  padding: 0.6rem 1.4rem; /* mniejsze przyciski */
+.add-btn,
+.logout-btn {
+  padding: 0.6rem 1.4rem;
   border-radius: 50px;
   font-weight: bold;
-  font-size: 1rem; /* mniejsza czcionka */
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s;
   border: none;
 }
 
-.apartments-list {
-  width: 100%;
-  max-width: 1000px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem; /* mniejsza przerwa między kartami */
+.add-btn {
+  background: #00d4ff;
+  color: white;
 }
 
-.apartment-item {
-  background: rgba(255, 255, 255, 0.08);
-  padding: 1.5rem; /* mniej paddingu */
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-  border-left: 4px solid #ff0000;
+.logout-btn {
+  background: #ef4444;
+  color: white;
 }
 
-.apartment-item:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
-}
-
-.item-city {
-  font-size: 1.6rem; /* było 2rem */
-  font-weight: bold;
-  margin-bottom: 0.4rem;
-}
-
-.item-address {
-  font-size: 1.1rem; /* było 1.3rem */
-  margin-bottom: 0.8rem;
-  opacity: 0.9;
-}
-
-.item-details {
-  display: flex;
-  gap: 1.5rem;
-  margin-bottom: 0.8rem;
-  font-size: 1rem; /* było 1.1rem */
-  flex-wrap: wrap;
-}
-
-.item-features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-  font-size: 0.9rem; /* było 1rem */
-}
-
-.item-features span {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 0.4rem 0.9rem;
-  border-radius: 20px;
-}
-
-.loading {
-  text-align: center;
-  font-size: 1.6rem;
-  padding: 3rem;
-}
-
-.tab-content {
-  width: 100%;
-  max-width: none;
-  margin: 0 auto;
-  padding: 1rem;
+/* Wspólne style dla tabel we wszystkich zakładkach */
+.data-table-wrapper {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .data-table {
   width: 100%;
+  min-width: 920px;               /* zabezpieczenie przed zbyt mocnym zwężeniem */
   border-collapse: collapse;
   margin-bottom: 2rem;
   background: #333333;
   color: white;
+  table-layout: auto;
 }
 
-.data-table th, .data-table td {
+.data-table th,
+.data-table td {
   border: 1px solid #555555;
   padding: 0.8rem;
   text-align: left;
@@ -123,6 +85,8 @@
 
 .data-table th {
   background: #444444;
+  font-weight: bold;
+  color: #00d4ff;
 }
 
 .table-row {
@@ -138,17 +102,26 @@
   background: #00d4ff;
   padding: 0.4rem 0.8rem;
   font-size: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
 }
 
+/* Panele edycji – wspólne dla wszystkich zakładek */
 .edit-panel {
   background: #333333;
   padding: 2rem;
-  border-radius: 16px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  max-width: 1200px;
+  margin: 2rem auto;
 }
 
 .edit-panel h3 {
   margin-bottom: 1.5rem;
   color: #00d4ff;
+  text-align: center;
 }
 
 .edit-form {
@@ -163,11 +136,23 @@
   color: #cccccc;
 }
 
+.edit-form input,
+.edit-form select {
+  margin-top: 0.4rem;
+  padding: 0.8rem;
+  border-radius: 12px;
+  border: none;
+  background: #555555;
+  color: white;
+}
+
 .edit-buttons {
   grid-column: span 2;
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .save-btn {
@@ -180,4 +165,39 @@
 
 .clear-btn {
   background: #666666;
+}
+
+.cancel-btn {
+  background: #888888;
+}
+
+/* Loading stan */
+.loading {
+  text-align: center;
+  font-size: 1.8rem;
+  padding: 4rem 1rem;
+  color: #cccccc;
+}
+
+/* Styl dla listy mieszkań (jeśli nadal używasz kart zamiast tabeli) */
+.apartments-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.apartment-item {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1.5rem;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  border-left: 4px solid #ff0000;
+}
+
+.apartment-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
 }

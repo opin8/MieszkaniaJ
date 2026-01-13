@@ -11,7 +11,6 @@ interface FinancialEntry {
   netAmount: number;
   vatRate: number;
   description?: string | null;
-  taxOperation: boolean;
   paid: boolean;
 }
 
@@ -43,7 +42,6 @@ function FinancialTab() {
     netAmount: 0,
     vatRate: 0,
     description: null,
-    taxOperation: false,
     paid: false,
   });
 
@@ -116,7 +114,6 @@ function FinancialTab() {
         netAmount: 0,
         vatRate: 0,
         description: null,
-        taxOperation: false,
         paid: false,
       });
     } catch (err) {
@@ -160,7 +157,6 @@ function FinancialTab() {
         netAmount: 0,
         vatRate: 0,
         description: null,
-        taxOperation: false,
         paid: false,
       });
     } else {
@@ -251,7 +247,6 @@ function FinancialTab() {
             <th>Kwota brutto</th>
             <th>VAT</th>
             <th>Opis</th>
-            <th>Operacja podatkowa</th>
             <th>Opłacono</th>
           </tr>
         </thead>
@@ -264,7 +259,6 @@ function FinancialTab() {
               <td>{e.netAmount.toFixed(2)} zł</td>
               <td>{e.vatRate.toFixed(2)}%</td>
               <td>{e.description || "—"}</td>
-              <td>{e.taxOperation ? "Tak" : "Nie"}</td>
               <td className={e.paid ? "paid-yes" : "paid-no"}>
                 {e.paid ? "Tak" : "Nie"}
               </td>
@@ -375,20 +369,6 @@ function FinancialTab() {
                     setNewEntry({ ...newEntry, description: e.target.value || null });
                   } else if (editForm) {
                     setEditForm({ ...editForm, description: e.target.value || null });
-                  }
-                }}
-              />
-            </label>
-            <label>
-              Operacja podatkowa
-              <input
-                type="checkbox"
-                checked={(addMode ? newEntry.taxOperation : editForm?.taxOperation) || false}
-                onChange={e => {
-                  if (addMode) {
-                    setNewEntry({ ...newEntry, taxOperation: e.target.checked });
-                  } else if (editForm) {
-                    setEditForm({ ...editForm, taxOperation: e.target.checked });
                   }
                 }}
               />
