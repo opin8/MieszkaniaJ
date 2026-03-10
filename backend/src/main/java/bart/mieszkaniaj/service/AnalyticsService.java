@@ -63,8 +63,6 @@ public class AnalyticsService {
                     .collect(Collectors.toList());
         }
 
-        System.out.println("After filters: " + entries.size() + " entries");
-
         double totalExpensesNet = entries.stream()
                 .filter(e -> e.getNetAmount() < 0)
                 .mapToDouble(e -> e.getNetAmount() / (1 + e.getVatRate() / 100))

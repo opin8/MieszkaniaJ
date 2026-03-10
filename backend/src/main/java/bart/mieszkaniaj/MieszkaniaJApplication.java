@@ -1,13 +1,14 @@
 package bart.mieszkaniaj;
 
-import bart.mieszkaniaj.service.ApartmentService;
-import bart.mieszkaniaj.service.ContractorService;
-import bart.mieszkaniaj.service.AgreementService;
-import bart.mieszkaniaj.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import bart.mieszkaniaj.service.AgreementService;
+import bart.mieszkaniaj.service.ApartmentService;
+import bart.mieszkaniaj.service.ContractorService;
+import bart.mieszkaniaj.service.UserService;
 
 @SpringBootApplication
 public class MieszkaniaJApplication implements CommandLineRunner {
@@ -30,9 +31,5 @@ public class MieszkaniaJApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        userService.createAdminIfNotExists();  // lub createDefaultUsers()
-        apartmentService.initSampleApartments();
-        contractorService.initSampleContractors();
-        agreementService.initSampleAgreements();
     }
 }
