@@ -27,7 +27,7 @@ public class UserService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     // === Zmienne z Render.com ===
-    @Value("${supabase.url:${SUPABASE_URL:}}")       
+    @Value("${supabase.url:${SUPABASE_URL:}}")
     private String supabaseUrl;
 
     @Value("${supabase.service-role-key:${SUPABASE_SERVICE_ROLE_KEY:}}")
