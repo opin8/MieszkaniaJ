@@ -64,21 +64,20 @@ public class UserService {
 
     public void createAdminIfNotExists() {
         // Sprawdzenie wymaganych zmiennych
-        if (supabaseUrl.isBlank() || serviceRoleKey.isBlank() || 
-            adminLogin.isBlank() || adminPassword.isBlank()) {
-            
+        if (supabaseUrl.isBlank() || serviceRoleKey.isBlank() ||
+                adminLogin.isBlank() || adminPassword.isBlank()) {
+
             System.err.println("❌ Pomijam tworzenie admina – brakuje zmiennych środowiskowych.");
-            System.err.println("   Wymagane: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ADMIN_LOGIN, ADMIN_PASSWORD");
             return;
         }
 
-        // Sprawdzenie czy admin już istnieje w lokalnej tabeli
+        // Sprawdzamy czy admin już istnieje w naszej tabeli (po username)
         if (userRepository.findByUsername(adminLogin) != null) {
-            System.out.println("✅ Admin już istnieje w lokalnej tabeli – pomijam tworzenie.");
+            System.out.println("✅ Admin o username '" + adminLogin + "' już istnieje – pomijam tworzenie.");
             return;
         }
 
-        // Przygotowanie czystego URL
+        // Przygotowanie URL
         String baseUrl = supabaseUrl.trim();
         if (baseUrl.endsWith("/")) {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
@@ -87,12 +86,13 @@ public class UserService {
 
         String url = baseUrl + "/auth/v1/admin/users";
 
-        // Poprawiony body – to rozwiązuje większość błędów "validation_failed"
+        // Tworzenie użytkownika w Supabase Auth
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("email", adminLogin);
+        requestBody.put("email", adminLogin);                    // cały email pochodzi z ADMIN_LOGIN
         requestBody.put("password", adminPassword);
         requestBody.put("email_confirm", true);
-        requestBody.put("app_metadata", Map.of("role", "admin"));   // ← najważniejsze
+        requestBody.put("app_metadata", Map.of("role", "ADMIN"));
+        requestBody.put("user_metadata", Map.of("preferred_username", adminLogin));  // opcjonalnie
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -108,22 +108,23 @@ public class UserService {
             );
 
             if (response.getStatusCode().is2xxSuccessful()) {
-                System.out.println("✅ Admin został pomyślnie utworzony w Supabase Auth: " + adminLogin);
+                System.out.println("✅ Admin utworzony pomyślnie w Supabase Auth");
+                System.out.println("   Username / Login: " + adminLogin);
+                System.out.println("   Email użyty w Supabase: " + adminLogin);
 
-                // Zapis do lokalnej tabeli
+                // Zapisujemy w naszej tabeli users
                 User admin = new User();
-                admin.setUsername(adminLogin);
+                admin.setUsername(adminLogin);        // używamy dokładnie tej samej wartości co w ADMIN_LOGIN
                 userRepository.save(admin);
+
             } else {
-                System.err.println("❌ Błąd przy tworzeniu admina – Status: " + response.getStatusCode());
-                System.err.println("   URL: " + url);
-                System.err.println("   Response: " + response.getBody());
+                System.err.println("❌ Błąd tworzenia admina – Status: " + response.getStatusCode());
+                System.err.println("   Response body: " + response.getBody());
             }
         } catch (Exception e) {
             System.err.println("❌ Wyjątek podczas tworzenia admina:");
             System.err.println("   URL: " + url);
             System.err.println("   Błąd: " + e.getMessage());
-            // e.printStackTrace();   // odkomentuj tylko przy debugowaniu
         }
     }
 }
