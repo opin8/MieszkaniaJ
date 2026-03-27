@@ -1,18 +1,23 @@
 package bart.mieszkaniaj.service;
 
-import bart.mieszkaniaj.model.User;
-import bart.mieszkaniaj.repository.UserRepository;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import bart.mieszkaniaj.model.User;
+import bart.mieszkaniaj.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class UserService {
@@ -22,7 +27,7 @@ public class UserService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     // === Zmienne z Render.com ===
-    @Value("${supabase.url:${SUPABASE_DB_URL:}}")           // fallback na SUPABASE_DB_URL
+    @Value("${supabase.url:${SUPABASE_URL:}}")       
     private String supabaseUrl;
 
     @Value("${supabase.service-role-key:${SUPABASE_SERVICE_ROLE_KEY:}}")
@@ -64,7 +69,7 @@ public class UserService {
                 adminLogin.isBlank() || adminPassword.isBlank()) {
 
             System.err.println("❌ Pomijam tworzenie admina – brakuje jednej lub więcej zmiennych środowiskowych:");
-            System.err.println("   SUPABASE_DB_URL / SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ADMIN_LOGIN, ADMIN_PASSWORD");
+            System.err.println("   SUPABASE_URL / SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ADMIN_LOGIN, ADMIN_PASSWORD");
             return;
         }
 
@@ -74,7 +79,7 @@ public class UserService {
             return;
         }
 
-        // Czyszczenie URL (na wypadek gdyby SUPABASE_DB_URL zawierało parametry JDBC)
+        // Czyszczenie URL (na wypadek gdyby SUPABASE_URL zawierało parametry JDBC)
         String baseUrl = supabaseUrl;
         if (baseUrl.contains("?")) {
             baseUrl = baseUrl.substring(0, baseUrl.indexOf("?"));
