@@ -21,16 +21,17 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${supabase.url}")
+    // === Zmienne z Render.com ===
+    @Value("${supabase.url:${SUPABASE_DB_URL:}}")           // fallback na SUPABASE_DB_URL
     private String supabaseUrl;
 
-    @Value("${supabase.service-role-key}")
+    @Value("${supabase.service-role-key:${SUPABASE_SERVICE_ROLE_KEY:}}")
     private String serviceRoleKey;
 
-    @Value("${admin.login}")
+    @Value("${admin.login:${ADMIN_LOGIN:}}")
     private String adminLogin;
 
-    @Value("${admin.password}")
+    @Value("${admin.password:${ADMIN_PASSWORD:}}")
     private String adminPassword;
 
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
@@ -38,6 +39,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Twoje istniejące metody bez zmian
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -57,18 +59,38 @@ public class UserService {
     }
 
     public void createAdminIfNotExists() {
-        // Najpierw sprawdź, czy admin już istnieje w twojej tabeli (lub w Supabase)
-        if (userRepository.findByUsername(adminLogin) != null) {
-            System.out.println("Admin już istnieje – pomijam tworzenie.");
+        // 1. Sprawdzenie czy wszystkie zmienne są ustawione
+        if (supabaseUrl.isBlank() || serviceRoleKey.isBlank() ||
+                adminLogin.isBlank() || adminPassword.isBlank()) {
+
+            System.err.println("❌ Pomijam tworzenie admina – brakuje jednej lub więcej zmiennych środowiskowych:");
+            System.err.println("   SUPABASE_DB_URL / SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ADMIN_LOGIN, ADMIN_PASSWORD");
             return;
         }
 
-        String url = supabaseUrl + "/auth/v1/admin/users";
+        // 2. Sprawdzenie czy admin już istnieje w Twojej lokalnej tabeli
+        if (userRepository.findByUsername(adminLogin) != null) {
+            System.out.println("✅ Admin już istnieje w lokalnej tabeli – pomijam tworzenie.");
+            return;
+        }
+
+        // Czyszczenie URL (na wypadek gdyby SUPABASE_DB_URL zawierało parametry JDBC)
+        String baseUrl = supabaseUrl;
+        if (baseUrl.contains("?")) {
+            baseUrl = baseUrl.substring(0, baseUrl.indexOf("?"));
+        }
+        if (baseUrl.endsWith("/")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+        // Usuwamy ewentualny /rest/v1 lub /postgres
+        baseUrl = baseUrl.replace("/rest/v1", "").replace("/postgres", "");
+
+        String url = baseUrl + "/auth/v1/admin/users";
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("email", adminLogin);
         requestBody.put("password", adminPassword);
-        requestBody.put("email_confirm", true);           // od razu potwierdzony
+        requestBody.put("email_confirm", true);
         requestBody.put("user_metadata", Map.of("role", "admin"));
 
         HttpHeaders headers = new HttpHeaders();
@@ -82,16 +104,22 @@ public class UserService {
             ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, entity, Map.class);
 
             if (response.getStatusCode().is2xxSuccessful()) {
-                System.out.println("✅ Admin utworzony w Supabase Auth: " + adminLogin);
+                System.out.println("✅ Admin został pomyślnie utworzony w Supabase Auth: " + adminLogin);
 
+                // Opcjonalnie zapisujemy w Twojej tabeli User
                 User admin = new User();
                 admin.setUsername(adminLogin);
+                // Nie zapisujemy hasła w plain text – jeśli potrzebujesz, zahashuj
                 userRepository.save(admin);
+
             } else {
-                System.err.println("Błąd tworzenia admina: " + response.getBody());
+                System.err.println("❌ Błąd HTTP przy tworzeniu admina: " + response.getStatusCode());
+                System.err.println("   Body: " + response.getBody());
             }
         } catch (Exception e) {
-            System.err.println("Wyjątek przy tworzeniu admina w Supabase: " + e.getMessage());
+            System.err.println("❌ Wyjątek podczas tworzenia admina w Supabase:");
+            System.err.println("   URL: " + url);
+            System.err.println("   Message: " + e.getMessage());
             e.printStackTrace();
         }
     }
